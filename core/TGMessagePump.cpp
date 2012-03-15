@@ -1,7 +1,7 @@
 
-#include "core/ANMessagePump.h"
+#include "core/TGMessagePump.h"
 
-bool ANMessagePump::Run() throw(ANError)
+bool TGMessagePump::Run() throw(TGError)
 {
     myRunning = true;
     SDL_Event event;
@@ -13,7 +13,7 @@ bool ANMessagePump::Run() throw(ANError)
                 return false;
             default:
                 {
-                    deque<ANMessageHandler*>::iterator it;
+                    deque<TGMessageHandler*>::iterator it;
                     for(it = myHandlers.begin(); it < myHandlers.end(); it++)
                     {
                         if((*it)->HandleMessage(event))
@@ -26,7 +26,7 @@ bool ANMessagePump::Run() throw(ANError)
     return true;
 }
 
-void ANMessagePump::AddHandler(ANMessageHandler *handler)
+void TGMessagePump::AddHandler(TGMessageHandler *handler)
 {
     if(!myRunning)
         myHandlers.push_back(handler);

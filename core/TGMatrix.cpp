@@ -1,10 +1,10 @@
 
 #include <sstream>
-#include "core/ANMatrix.h"
+#include "core/TGMatrix.h"
 
-const ANMatrix4 ANMatrix4::Identity;
+const TGMatrix4 TGMatrix4::Identity;
 
-ANMatrix4::ANMatrix4(const real data[16], bool rowMajor)
+TGMatrix4::TGMatrix4(const real data[16], bool rowMajor)
 {
     for(int n = 0; n < 16; n++)
     {
@@ -12,7 +12,7 @@ ANMatrix4::ANMatrix4(const real data[16], bool rowMajor)
     }
 }
 
-void ANMatrix4::CreatePerspective(real fov, real ratio, real near, real far)
+void TGMatrix4::CreatePerspective(real fov, real ratio, real near, real far)
 {
     real tangent = tan(fov/2.0);
     real top = near * tangent;
@@ -23,10 +23,10 @@ void ANMatrix4::CreatePerspective(real fov, real ratio, real near, real far)
     CreatePerspective(left, right, bottom, top, near, far);
 }
 
-void ANMatrix4::CreatePerspective(real left, real right, 
+void TGMatrix4::CreatePerspective(real left, real right, 
         real bottom, real top, real near, real far)
 {
-    ANMatrix4 &a = *this;
+    TGMatrix4 &a = *this;
     a(0,0) = 2*near/(right-left);
     a(0,1) = 0;
     a(0,2) = (right + left)/(right-left);
@@ -45,10 +45,10 @@ void ANMatrix4::CreatePerspective(real left, real right,
     a(3,3) = 0;
 }
 
-void ANMatrix4::CreateOrthogonal(real left, real right,
+void TGMatrix4::CreateOrthogonal(real left, real right,
         real bottom, real top, real near, real far)
 {
-    ANMatrix4 &a = *this;
+    TGMatrix4 &a = *this;
     a(0,0) = 2/(right-left);
     a(0,1) = 0;
     a(0,2) = 0;
@@ -67,9 +67,9 @@ void ANMatrix4::CreateOrthogonal(real left, real right,
     a(3,3) = 1;
 }
 
-void ANMatrix4::CreateRotationX(real angle)
+void TGMatrix4::CreateRotationX(real angle)
 {
-    ANMatrix4 &a = *this;
+    TGMatrix4 &a = *this;
     a(0,0) = 1;
     a(0,1) = 0;
     a(0,2) = 0;
@@ -88,9 +88,9 @@ void ANMatrix4::CreateRotationX(real angle)
     a(3,3) = 1;
 }
 
-void ANMatrix4::CreateRotationY(real angle)
+void TGMatrix4::CreateRotationY(real angle)
 {
-    ANMatrix4 &a = *this;
+    TGMatrix4 &a = *this;
     a(0,0) = cos(angle);
     a(0,1) = 0;
     a(0,2) = sin(angle);
@@ -109,9 +109,9 @@ void ANMatrix4::CreateRotationY(real angle)
     a(3,3) = 1;
 }
 
-void ANMatrix4::CreateRotationZ(real angle)
+void TGMatrix4::CreateRotationZ(real angle)
 {
-    ANMatrix4 &a = *this;
+    TGMatrix4 &a = *this;
     a(0,0) = cos(angle);
     a(0,1) = -sin(angle);
     a(0,2) = 0;
@@ -130,9 +130,9 @@ void ANMatrix4::CreateRotationZ(real angle)
     a(3,3) = 1;
 }
 
-void ANMatrix4::CreateTranslation(const ANVectorF4 &pos)
+void TGMatrix4::CreateTranslation(const TGVectorF4 &pos)
 {
-    ANMatrix4 &a = *this;
+    TGMatrix4 &a = *this;
     a(0,0) = 1;
     a(0,1) = 0;
     a(0,2) = 0;
@@ -151,26 +151,26 @@ void ANMatrix4::CreateTranslation(const ANVectorF4 &pos)
     a(3,3) = 1;
 }
 
-void ANMatrix4::SetTranslation(const ANVectorF4 &pos)
+void TGMatrix4::SetTranslation(const TGVectorF4 &pos)
 {
-    ANMatrix4 &a = *this;
+    TGMatrix4 &a = *this;
     a(0,3) = pos.X;
     a(1,3) = pos.Y;
     a(2,3) = pos.Z;
 }
 
-void ANMatrix4::GetTranslation(ANVectorF4 &pos) const 
+void TGMatrix4::GetTranslation(TGVectorF4 &pos) const 
 {
-    const ANMatrix4 &a = *this;
+    const TGMatrix4 &a = *this;
     pos.X = a(0,3);
     pos.Y = a(1,3);
     pos.Z = a(2,3);
 }
 
-ANMatrix4 ANMatrix4::operator * (const ANMatrix4 b) const
+TGMatrix4 TGMatrix4::operator * (const TGMatrix4 b) const
 {
-    ANMatrix4 c;
-    const ANMatrix4 &a = *this;
+    TGMatrix4 c;
+    const TGMatrix4 &a = *this;
     for(uint i = 0; i < 4; i++)
     {
         for(uint j = 0; j < 4; j++)
@@ -185,7 +185,7 @@ ANMatrix4 ANMatrix4::operator * (const ANMatrix4 b) const
     return c;
 }
 
-ANMatrix4::operator const string () const
+TGMatrix4::operator const string () const
 {
     ostringstream out;
     out<<"[ ";

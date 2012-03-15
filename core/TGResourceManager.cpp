@@ -1,6 +1,6 @@
 
-#include "core/ANResourceManager.h"
-#include "core/ANError.h"
+#include "core/TGResourceManager.h"
+#include "core/TGError.h"
 #include <iostream>
 #include <fstream>
 
@@ -12,14 +12,14 @@ const string SubDirs[2] =
     "textures/"
 };
 
-ANResource ANResourceManager::CreateResource(ANResourceType type, string name)
+TGResource TGResourceManager::CreateResource(TGResourceType type, string name)
 {
     ifstream stream;
     string filename = DataDir+SubDirs[static_cast<uint>(type)]+name;
     stream.open(filename, ios::in | ios::binary);
     if(stream.fail())
     {
-        throw ANError(filename).Prepend("Failed to open file");
+        throw TGError(filename).Prepend("Failed to open file");
     }
     stream.seekg(0, ios::end);
     uint length = stream.tellg();
@@ -27,7 +27,7 @@ ANResource ANResourceManager::CreateResource(ANResourceType type, string name)
     char *data = new char[length+1];
     stream.read(data, length);
     data[length] = 0;
-    ANResourceEntry entry(type, length, data);
+    TGResourceEntry entry(type, length, data);
     delete [] data;
     myResources.push_back(entry);
     return myResources.size() - 1;

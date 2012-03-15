@@ -1,9 +1,9 @@
 
-#include "core/ANDef.h"
-#include "core/ANDebug.h"
-#include "core/ANVector.h"
+#include "core/TGDef.h"
+#include "core/TGDebug.h"
+#include "core/TGVector.h"
 
-class ANMesh
+class TGMesh
 {
     enum BufferKind
     {
@@ -29,15 +29,15 @@ class ANMesh
     {
         return index%myWidth;
     }
-    ANVectorF4 *myData;
+    TGVectorF4 *myData;
     public:
-    ANMesh(uint height, uint width);
-    ~ANMesh();
+    TGMesh(uint height, uint width);
+    ~TGMesh();
 
     void Map();
     void Unmap();
 
-    ANVectorF4 &E(uint i, uint j)
+    TGVectorF4 &E(uint i, uint j)
     {
         Bug(myData == NULL, "Access Z when unmaped");
 

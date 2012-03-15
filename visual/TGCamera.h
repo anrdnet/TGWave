@@ -1,31 +1,31 @@
 
-#ifndef ANCAMERA_H_
-#define ANCAMERA_H_
+#ifndef TGCAMERA_H_
+#define TGCAMERA_H_
 
-#include "core/ANMatrix.h"
-#include "core/ANVector.h"
-#include "core/ANDebug.h"
+#include "core/TGMatrix.h"
+#include "core/TGVector.h"
+#include "core/TGDebug.h"
 
-class ANCamera
+class TGCamera
 {
-    ANMatrix4 myView;
-    ANVectorF4 myLookAt;
-    ANVectorF4 myPosition;
+    TGMatrix4 myView;
+    TGVectorF4 myLookAt;
+    TGVectorF4 myPosition;
     void Create();
     public:
-    ANVectorF4 &Move(ANVectorF4 &offset);
-    ANVectorF4 &Orbit(real az, real el);
-    ANVectorF4 &Zoom(real factor);
-    ANMatrix4 &GetView()
+    TGVectorF4 &Move(TGVectorF4 &offset);
+    TGVectorF4 &Orbit(real az, real el);
+    TGVectorF4 &Zoom(real factor);
+    TGMatrix4 &GetView()
     {
         return myView;
     }
-    ANVectorF4 GetPosition() 
+    TGVectorF4 GetPosition() 
     {
         return myPosition;
     }
 
-    void SetPostition(ANVectorF4 &pos)
+    void SetPostition(const TGVectorF4 &pos)
     {
         myPosition = pos;
         Create();
@@ -33,9 +33,14 @@ class ANCamera
 
     void SetOrientation(real az, real el);
 
-    ANVectorF4 GetViewDirection()
+    void LookAt(const TGVectorF4 &la)
     {
-        return ANVectorF4(-myView(2,0), -myView(2,1), -myView(2,2));
+        myLookAt = la;
+    }
+
+    TGVectorF4 GetViewDirection()
+    {
+        return TGVectorF4(-myView(2,0), -myView(2,1), -myView(2,2));
     }
 };
 

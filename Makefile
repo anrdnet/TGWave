@@ -27,4 +27,4 @@ $(BINDIR)/%.o: %.cpp Makefile
 .PHONY: clean
 
 clean:
-	-@ rm anlands $(BINDIR)/*.o $(BINDIR)/*.d $(BINDIR)/*/*.o $(BINDIR)/*/*.d $(BINDIR)/*/*/*.o $(BINDIR)/*/*/*.d
+	-@ rm -f tgwave $(BINDIR)/*.o $(BINDIR)/*.d $(BINDIR)/*/*.o $(BINDIR)/*/*.d $(BINDIR)/*/*/*.o $(BINDIR)/*/*/*.d

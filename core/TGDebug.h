@@ -1,12 +1,12 @@
 
-#ifndef ANDEBUG_H_
-#define ANDEBUG_H_
+#ifndef TGDEBUG_H_
+#define TGDEBUG_H_
 
-#include "core/ANDef.h"
+#include "core/TGDef.h"
 #include <iostream>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "core/ANError.h"
+#include "core/TGError.h"
 #include <string>
 #include <cstdlib>
 #define Debug(x) std::cerr<<__FILE__<<":"<<__LINE__<<" "<<x<<std::endl
@@ -20,7 +20,7 @@ inline void _CheckError(const char *file, uint line)
     if(err != GL_NO_ERROR) 
     {
         Debug("Some error at: "<<file<<":"<<line<<" "<<err);
-        throw ANError(ANErrorCode::GL);
+        throw TGError(TGErrorCode::GL);
     }
 }
 

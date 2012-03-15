@@ -1,15 +1,15 @@
 
-#include "visual/ANShader.h"
-#include "core/ANError.h"
+#include "visual/TGShader.h"
+#include "core/TGError.h"
 
-ANShader::ANShader()
+TGShader::TGShader()
 {
     myProgram = glCreateProgram();
     myShaders[0] = 0;
     myShaders[1] = 0;
 }
 
-ANShader::~ANShader()
+TGShader::~TGShader()
 {
     for(int i = 0; i < 2; i++)
     {
@@ -22,7 +22,7 @@ ANShader::~ANShader()
     glDeleteProgram(myProgram);
 }
 
-void ANShader::SetShader(ANShaderType type, const string shaderCode)
+void TGShader::SetShader(TGShaderType type, const string shaderCode)
 {
     if(myShaders[type] != 0)
     {
@@ -33,14 +33,14 @@ void ANShader::SetShader(ANShaderType type, const string shaderCode)
     GLenum shaderType;
     switch(type)
     {
-        case ANVertexShader:
+        case TGVertexShader:
             shaderType = GL_VERTEX_SHADER;
             break;
-        case ANFragmentShader:
+        case TGFragmentShader:
             shaderType = GL_FRAGMENT_SHADER;
             break;
         default:
-            throw ANError("Unknown shader type");
+            throw TGError("Unknown shader type");
     }
 
     myShaders[type] = glCreateShader(shaderType);
@@ -54,20 +54,20 @@ void ANShader::SetShader(ANShaderType type, const string shaderCode)
     {
         glGetShaderiv(myShaders[type], GL_INFO_LOG_LENGTH, &status);
         if(status == 0)
-            throw ANError("Unknown compile error");
+            throw TGError("Unknown compile error");
         char *buffer = new char[status+1];
         GLsizei length;
         glGetShaderInfoLog(myShaders[type], status, &length, buffer);
         buffer[length] = 0;
         string log(buffer);
         delete [] buffer;
-        throw ANError("Compilation failed:\n"+log);
+        throw TGError("Compilation failed:\n"+log);
     }
 
     glAttachShader(myProgram, myShaders[type]);
 }
 
-void ANShader::Link()
+void TGShader::Link()
 {
     glLinkProgram(myProgram);
     int status;
@@ -76,23 +76,23 @@ void ANShader::Link()
     {
         glGetProgramiv(myProgram, GL_INFO_LOG_LENGTH, &status);
         if(status == 0)
-            throw ANError("Unknown link error");
+            throw TGError("Unknown link error");
         char *buffer = new char[status+1];
         GLsizei length;
         glGetProgramInfoLog(myProgram, status, &length, buffer);
         buffer[length] = 0;
         string log(buffer);
         delete [] buffer;
-        throw ANError("Linking failed:\n"+log);
+        throw TGError("Linking failed:\n"+log);
     }
 }
 
-void ANShader::Use()
+void TGShader::Use()
 {
     glUseProgram(myProgram);
 }
 
-void ANShader::SetAttribute(string name, GLuint vbo, uint elementCount,
+void TGShader::SetAttribute(string name, GLuint vbo, uint elementCount,
         GLenum type, uint stride, uint offset, uint divisor)
 {
     GLuint attribute = glGetAttribLocation(myProgram, name.c_str());

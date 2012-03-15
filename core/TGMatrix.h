@@ -1,13 +1,13 @@
 
-#ifndef ANMATRIX_H_
-#define ANMATRIX_H_
+#ifndef TGMATRIX_H_
+#define TGMATRIX_H_
 
 #include <cmath>
-#include "core/ANDef.h"
-#include "core/ANError.h"
-#include "core/ANVector.h"
+#include "core/TGDef.h"
+#include "core/TGError.h"
+#include "core/TGVector.h"
 
-class ANMatrix4
+class TGMatrix4
 {
     static const int N = 4;
     real myData[N*N];
@@ -21,9 +21,9 @@ class ANMatrix4
         j = index / N;
     }
     public:
-    static const ANMatrix4 Identity;
+    static const TGMatrix4 Identity;
 
-    ANMatrix4()
+    TGMatrix4()
         : myData ({
             1, 0, 0, 0,
             0, 1, 0, 0,
@@ -34,25 +34,25 @@ class ANMatrix4
 
     }
 
-    ANMatrix4(const real data[N*N], bool rowMajor = true);
+    TGMatrix4(const real data[N*N], bool rowMajor = true);
 
 
     real& operator() (const int i, const int j)
     {
         if(i >= N || j >= N)
-            throw ANError(ANErrorCode::MatOutOfBounds);
+            throw TGError(TGErrorCode::MatOutOfBounds);
         return myData[Index(i, j)];
     }
 
     real operator() (const int i, const int j) const
     {
         if(i >= N || j >= N)
-            throw ANError(ANErrorCode::MatOutOfBounds);
+            throw TGError(TGErrorCode::MatOutOfBounds);
         return myData[Index(i, j)];
     }
 
-    void SetTranslation(const ANVectorF4 &pos);
-    void GetTranslation(ANVectorF4 &pos) const;
+    void SetTranslation(const TGVectorF4 &pos);
+    void GetTranslation(TGVectorF4 &pos) const;
 
     void CreatePerspective(real fov, real ratio, real near, real far);
     void CreatePerspective(real left, real right, 
@@ -62,9 +62,9 @@ class ANMatrix4
     void CreateRotationX(real angle);
     void CreateRotationY(real angle);
     void CreateRotationZ(real angle);
-    void CreateTranslation(const ANVectorF4 &pos);
+    void CreateTranslation(const TGVectorF4 &pos);
 
-    ANMatrix4 operator * (const ANMatrix4 b) const;
+    TGMatrix4 operator * (const TGMatrix4 b) const;
     operator const real*() const
     {
         return myData;

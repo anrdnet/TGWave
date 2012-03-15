@@ -1,9 +1,9 @@
-#ifndef ANMESSAGEHANDLER_H_
-#define ANMESSAGEHANDLER_H_
+#ifndef TGMESSAGEHTGDLER_H_
+#define TGMESSAGEHTGDLER_H_
 
 #include <SDL/SDL.h>
 
-class ANMessageHandler
+class TGMessageHandler
 {
     public:
     virtual bool HandleMessage(SDL_Event &message) = 0;

@@ -1,48 +1,48 @@
 
-#ifndef ANRENDER_H_
-#define ANRENDER_H_
+#ifndef TGRENDER_H_
+#define TGRENDER_H_
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <GL/gl.h>
 #include <SDL/SDL.h>
-#include "core/ANDef.h"
-#include "core/ANError.h"
-#include "core/ANDebug.h"
-#include "core/ANMessageHandler.h"
-#include "core/ANMatrix.h"
+#include "core/TGDef.h"
+#include "core/TGError.h"
+#include "core/TGDebug.h"
+#include "core/TGMessageHandler.h"
+#include "core/TGMatrix.h"
 
-struct ANSizeInfo
+struct TGSizeInfo
 {
     int Width;
     int Height;
 };
 
-class ANRender : public ANMessageHandler
+class TGRender : public TGMessageHandler
 {
-    ANSizeInfo myCurrentSize;
+    TGSizeInfo myCurrentSize;
 
     SDL_Surface *myScreen;
 
-    void Initialize(int width, int height, bool fullscreen) throw(ANError);
+    void Initialize(int width, int height, bool fullscreen) throw(TGError);
     void InitDefState();
     public:
-    ANRender() throw(ANError); 
+    TGRender() throw(TGError); 
 
-    ANRender(int width, int height) throw(ANError);
-    ~ANRender();
+    TGRender(int width, int height) throw(TGError);
+    ~TGRender();
 
     virtual bool HandleMessage(SDL_Event &message);
 
-    void SetProjection(ANSizeInfo &size);
+    void SetProjection(TGSizeInfo &size);
 
     void Present()
     {
         SDL_GL_SwapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
-    ANSizeInfo &GetSize()
+    TGSizeInfo &GetSize()
     {
         return myCurrentSize;
     }

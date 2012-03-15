@@ -1,16 +1,16 @@
 
-#ifndef ANVECTOR_H_
-#define ANVECTOR_H_
+#ifndef TGVECTOR_H_
+#define TGVECTOR_H_
 
 #include <string>
-#include "core/ANDef.h"
+#include "core/TGDef.h"
 #include <sstream>
 #include <cmath>
 
 using namespace std;
 
 template<typename T>
-class ANVectorT4
+class TGVectorT4
 {
     public:
     union
@@ -25,64 +25,69 @@ class ANVectorT4
         T Elements[4];
     };
 
-    ANVectorT4()
+    TGVectorT4()
         : X(0), Y(0), Z(0), W(1)
     {
 
     }
 
-    ANVectorT4(T x, T y, T z)
+    TGVectorT4(T x, T y, T z)
         : X(x), Y(y), Z(z), W(1)
     {
     }
 
-    ANVectorT4(T x, T y, T z, T w)
+    TGVectorT4(T x, T y, T z, T w)
         : X(x), Y(y), Z(z), W(w)
     {
     }
     
     void Floor();
 
-    ANVectorT4 ComponentMul(const ANVectorT4 &b) const
+    TGVectorT4 ComponentMul(const TGVectorT4 &b) const
     {
-        return ANVectorT4(X*b.X, Y*b.Y, Z*b.Z);
+        return TGVectorT4(X*b.X, Y*b.Y, Z*b.Z);
     }
 
-    ANVectorT4 operator+ (const ANVectorT4 &b) const
+    TGVectorT4 operator+ (const TGVectorT4 &b) const
     {
-        return ANVectorT4(X + b.X, Y + b.Y, Z + b.Z);
+        return TGVectorT4(X + b.X, Y + b.Y, Z + b.Z);
     }
 
-    ANVectorT4 operator- (const ANVectorT4 &b) const
+    TGVectorT4 operator- (const TGVectorT4 &b) const
     {
-        return ANVectorT4(X - b.X, Y - b.Y, Z - b.Z);
+        return TGVectorT4(X - b.X, Y - b.Y, Z - b.Z);
     }
 
-    void operator+= (const ANVectorT4 &b) 
+    void operator+= (const TGVectorT4 &b) 
     {
         X += b.X;
         Y += b.Y;
         Z += b.Z;
     }
 
-    void operator-= (const ANVectorT4 &b)
+    void operator-= (const TGVectorT4 &b)
     {
         X -= b.X;
         Y -= b.Y;
         Z -= b.Z;
     }
 
-    T operator* (const ANVectorT4 &b) const
+    T operator* (const TGVectorT4 &b) const
     {
         return X * b.X + Y * b.Y + Z * b.Z;
     }
 
-    ANVectorT4 operator* (T s) const
+    TGVectorT4 operator% (const TGVectorT4 &b) const
     {
-        return ANVectorT4(X*s,Y*s,Z*s);
+        return TGVectorT4(Y*b.Z-Z*b.Y, Z*b.X-X*b.Z, X*b.Y-Y*b.X);
     }
 
-    ANVectorT4 operator/ (T s) const
+    TGVectorT4 operator* (T s) const
+    {
+        return TGVectorT4(X*s,Y*s,Z*s);
+    }
+
+    TGVectorT4 operator/ (T s) const
     {
         return (*this)*(1/s);
     }
@@ -101,29 +106,29 @@ class ANVectorT4
         Z /= s;
     }
 
-    bool operator== (const ANVectorT4 &b) const
+    bool operator== (const TGVectorT4 &b) const
     {
         return X == b.X && Y == b.Y && Z == b.Z && W == b.W;
     }
     
-    bool operator!= (const ANVectorT4 &b) const
+    bool operator!= (const TGVectorT4 &b) const
     {
         return !((*this) == b);
     }
 
-    bool operator< (const ANVectorT4 &b) const
+    bool operator< (const TGVectorT4 &b) const
     {
         return X < b.X && Y < b.Y && Z < b.Z;
     }
-    bool operator> (const ANVectorT4 &b) const
+    bool operator> (const TGVectorT4 &b) const
     {
         return X > b.X && Y > b.Y && Z > b.Z;
     }
-    bool operator<= (const ANVectorT4 &b) const
+    bool operator<= (const TGVectorT4 &b) const
     {
         return X <= b.X && Y <= b.Y && Z <= b.Z && W <= b.W;
     }
-    bool operator>= (const ANVectorT4 &b) const
+    bool operator>= (const TGVectorT4 &b) const
     {
         return X >= b.X && Y >= b.Y && Z >= b.Z && W >= b.W;
     }
@@ -143,7 +148,7 @@ class ANVectorT4
 } __attribute__((packed));
 
 template<typename T>
-ANVectorT4<T>::operator const string () const
+TGVectorT4<T>::operator const string () const
 {
     ostringstream out;
     out<<"( ";
@@ -154,28 +159,28 @@ ANVectorT4<T>::operator const string () const
 }
 
 template<typename T>
-void ANVectorT4<T>::Floor()
+void TGVectorT4<T>::Floor()
 {
     X = floor(X);
     Y = floor(Y);
     Z = floor(Z);
 }
 
-typedef ANVectorT4<real> ANVectorF4;
-typedef ANVectorT4<int> ANVectorI4;
+typedef TGVectorT4<real> TGVectorF4;
+typedef TGVectorT4<int> TGVectorI4;
 
-extern const ANVectorF4 ZeroF;
-extern const ANVectorF4 UnitXF;
-extern const ANVectorF4 UnitYF;
-extern const ANVectorF4 UnitZF;
-extern const ANVectorF4 OneF;
-extern const ANVectorF4 UnitF[3];
-extern const ANVectorI4 ZeroI;
-extern const ANVectorI4 UnitXI;
-extern const ANVectorI4 UnitYI;
-extern const ANVectorI4 UnitZI;
-extern const ANVectorI4 OneI;
-extern const ANVectorI4 UnitI[3];
+extern const TGVectorF4 ZeroF;
+extern const TGVectorF4 UnitXF;
+extern const TGVectorF4 UnitYF;
+extern const TGVectorF4 UnitZF;
+extern const TGVectorF4 OneF;
+extern const TGVectorF4 UnitF[3];
+extern const TGVectorI4 ZeroI;
+extern const TGVectorI4 UnitXI;
+extern const TGVectorI4 UnitYI;
+extern const TGVectorI4 UnitZI;
+extern const TGVectorI4 OneI;
+extern const TGVectorI4 UnitI[3];
 
 
 #endif

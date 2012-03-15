@@ -1,13 +1,13 @@
 
-#ifndef ANERROR_H_
-#define ANERROR_H_
+#ifndef TGERROR_H_
+#define TGERROR_H_
 
 #include <exception>
 #include <string>
 
 using namespace std;
 
-enum class ANErrorCode
+enum class TGErrorCode
 {
     Unspecified,
     #define ERR(identifier, message) identifier,
@@ -23,50 +23,50 @@ const string ErrorMessages[] =
     #undef ERR
 };
 
-class ANError : public exception
+class TGError : public exception
 {
-    ANErrorCode myCode;
+    TGErrorCode myCode;
     string myMessage;
     public:
-    ANError(ANErrorCode code)
+    TGError(TGErrorCode code)
         : myCode(code),
         myMessage(ErrorMessages[(uint)code])
     {
 
     }
-    ANError(string message)
-        : myCode(ANErrorCode::Unspecified),
+    TGError(string message)
+        : myCode(TGErrorCode::Unspecified),
         myMessage(message)
     {
 
     }
 
-    virtual ~ANError() throw(){ };
+    virtual ~TGError() throw(){ };
 
     virtual const char *what() const throw() 
     {
         return myMessage.c_str();
     }
 
-    ANError &Prepend(string message)
+    TGError &Prepend(string message)
     {
         myMessage = message + ": "+ myMessage;
         return *this;
     }
 
-    ANError &Prepend(ANErrorCode code)
+    TGError &Prepend(TGErrorCode code)
     {
         myCode = code;
         myMessage = ErrorMessages[(uint)code] + ": " + myMessage;
         return *this;
     }
 
-    bool operator == (ANErrorCode code)
+    bool operator == (TGErrorCode code)
     {
         return myCode == code;
     }
 
-    bool operator != (ANErrorCode code)
+    bool operator != (TGErrorCode code)
     {
         return myCode != code;
     }

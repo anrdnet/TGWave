@@ -1,44 +1,42 @@
 
 #include <iostream>
-#include "visual/ANRender.h"
-#include "visual/ANCamera.h"
-#include "visual/ANMesh.h"
-#include "core/ANMessagePump.h"
-#include "core/ANResourceManager.h"
-#include "visual/ANShader.h"
+#include "visual/TGRender.h"
+#include "visual/TGCamera.h"
+#include "visual/TGMesh.h"
+#include "core/TGMessagePump.h"
+#include "core/TGResourceManager.h"
+#include "visual/TGShader.h"
 
 int main(int argc, char *argv[])
 {
-    ANMessagePump pump;
-    ANRender render(0,0);
-    ANMesh mesh(24,24);
+    TGMessagePump pump;
+    TGRender render(0,0);
+    TGMesh mesh(24,24);
 
     pump.AddHandler(&render);
 
-    ANCamera camera;
-    ANVectorF4 myMovement;
-    ANVectorF4 myRotation;
-    myMovement.Z = -30;
+    TGCamera camera;
+    TGVectorF4 myMovement;
+    myMovement.Z = 34;
     myMovement.Y = 5;
-    //myRotation.Y = 3.14156;
-    //myRotation.X = -3.14156 / 3;
-    //myRotation.Y = 3.14156 / 4;
+    myMovement.X = 0;
+    //camera.LookAt(TGVectorF4(12,0,12));
     camera.Move(myMovement);
-    camera.Rotate(myRotation);
     Debug("View is: "<<(string)camera.GetView());
+    Debug("View dir:"<<(string)camera.GetViewDirection());
 
-    ANResourceManager rec;
-    ANResource vs = rec.CreateResource(ANResourceType::Shader, "cubeshader.vs");
-    ANResource fs = rec.CreateResource(ANResourceType::Shader, "cubeshader.fs");
-    ANResource bfs = rec.CreateResource(ANResourceType::Shader, "black.fs");
+    TGResourceManager rec;
+    TGResource vs = rec.CreateResource(TGResourceType::Shader, "cubeshader.vs");
+    TGResource fs = rec.CreateResource(TGResourceType::Shader, "cubeshader.fs");
+    TGResource bfs = rec.CreateResource(TGResourceType::Shader, "black.fs");
     Debug("Got shaders");
-    ANShader shader;
-    shader.SetShader(ANVertexShader, rec.GetData(vs));
-    shader.SetShader(ANFragmentShader, rec.GetData(fs));
+    TGShader shader;
+    shader.SetShader(TGVertexShader, rec.GetData(vs));
+    shader.SetShader(TGFragmentShader, rec.GetData(fs));
     shader.Link();
-    ANShader black;
-    black.SetShader(ANVertexShader, rec.GetData(vs));
-    black.SetShader(ANFragmentShader, rec.GetData(bfs));
+    TGShader black;
+    black.SetShader(TGVertexShader, rec.GetData(vs));
+    black.SetShader(TGFragmentShader, rec.GetData(bfs));
     black.Link();
 
     while(pump.Run())

@@ -1,20 +1,20 @@
 
-#include "ANMesh.h"
-#include "core/ANDebug.h"
-#include "core/ANVector.h"
+#include "TGMesh.h"
+#include "core/TGDebug.h"
+#include "core/TGVector.h"
 
-ANMesh::ANMesh(uint height, uint width)
+TGMesh::TGMesh(uint height, uint width)
     : myHeight(height) , myWidth(width), myData(NULL)
 {
-    Bug(sizeof(ANVectorF4) != 16, "ANVectorF4-size is not 16");
+    Bug(sizeof(TGVectorF4) != 16, "TGVectorF4-size is not 16");
 
     glGenBuffers(3, myBuffers);
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
     CheckError();
-    glBufferData(GL_ARRAY_BUFFER, sizeof(ANVectorF4)*height*width,
+    glBufferData(GL_ARRAY_BUFFER, sizeof(TGVectorF4)*height*width,
             NULL, GL_DYNAMIC_DRAW);
     CheckError();
-    ANVectorF4 *vdata = static_cast<ANVectorF4*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+    TGVectorF4 *vdata = static_cast<TGVectorF4*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
     if(vdata == NULL)
         CheckError();
     
@@ -51,28 +51,28 @@ ANMesh::ANMesh(uint height, uint width)
     CheckError();
 }
 
-ANMesh::~ANMesh()
+TGMesh::~TGMesh()
 {
     glDeleteBuffers(3, myBuffers);
 }
 
-void ANMesh::Map()
+void TGMesh::Map()
 {
     Bug(myData != NULL, "Mapping mapped mesh");
 
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
-    myData = static_cast<ANVectorF4*>(glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE));
+    myData = static_cast<TGVectorF4*>(glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE));
     CheckError();
 }
 
-void ANMesh::Unmap()
+void TGMesh::Unmap()
 {
     Bug(myData == NULL, "Unmapping unmapped mesh");
     glUnmapBuffer(GL_ARRAY_BUFFER);
     CheckError();
 }
 
-void ANMesh::Draw()
+void TGMesh::Draw()
 {
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[ELEMENT]);
@@ -82,7 +82,7 @@ void ANMesh::Draw()
     glDrawElements(GL_TRIANGLE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_SHORT, 0);
     CheckError();
 }
-void ANMesh::DrawLines()
+void TGMesh::DrawLines()
 {
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[ELEMENT]);

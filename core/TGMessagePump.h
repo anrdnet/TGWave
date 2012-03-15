@@ -1,23 +1,23 @@
 
-#ifndef ANMESSAGEPUMP_H_
-#define ANMESSAGEPUMP_H_
+#ifndef TGMESSAGEPUMP_H_
+#define TGMESSAGEPUMP_H_
 
-#include "core/ANDef.h"
-#include "core/ANMessageHandler.h"
-#include "core/ANError.h"
+#include "core/TGDef.h"
+#include "core/TGMessageHandler.h"
+#include "core/TGError.h"
 #include <deque>
 
-class ANMessagePump
+class TGMessagePump
 {
     bool myRunning;
-    deque<ANMessageHandler*> myHandlers;
+    deque<TGMessageHandler*> myHandlers;
 
     public:
-    ANMessagePump()
+    TGMessagePump()
         : myRunning(false) { }
-    bool Run() throw(ANError);
+    bool Run() throw(TGError);
 
-    void AddHandler(ANMessageHandler *handler);
+    void AddHandler(TGMessageHandler *handler);
 };
 
 #endif

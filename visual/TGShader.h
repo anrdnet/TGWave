@@ -1,28 +1,28 @@
 
-#ifndef ANSHADER_H_
-#define ANSHADER_H_
+#ifndef TGSHADER_H_
+#define TGSHADER_H_
 
-#include "core/ANDef.h"
+#include "core/TGDef.h"
 #include <string>
 
 using namespace std;
 
-enum ANShaderType
+enum TGShaderType
 {
-    ANVertexShader = 0,
-    ANFragmentShader = 1
+    TGVertexShader = 0,
+    TGFragmentShader = 1
 };
 
-class ANShader
+class TGShader
 {
     uint myProgram;
     uint myShaders[2];
 
     public:
-    ANShader();
-    ~ANShader();
+    TGShader();
+    ~TGShader();
 
-    void SetShader(ANShaderType, const string shaderCode);
+    void SetShader(TGShaderType, const string shaderCode);
     void Link();
     void Use();
 
