@@ -11,16 +11,16 @@ int main(int argc, char *argv[])
 {
     TGMessagePump pump;
     TGRender render(0,0);
-    TGMesh mesh(24,24);
+    TGMesh mesh(12,12);
 
     pump.AddHandler(&render);
 
     TGCamera camera;
     TGVectorF4 myMovement;
-    myMovement.Z = 34;
-    myMovement.Y = 5;
-    myMovement.X = 0;
-    //camera.LookAt(TGVectorF4(12,0,12));
+    myMovement.Z = 30;
+    myMovement.Y = 10;
+    myMovement.X = 12;
+    camera.LookAt(TGVectorF4(12,0,0));
     camera.Move(myMovement);
     Debug("View is: "<<(string)camera.GetView());
     Debug("View dir:"<<(string)camera.GetViewDirection());
@@ -39,6 +39,13 @@ int main(int argc, char *argv[])
     black.SetShader(TGFragmentShader, rec.GetData(bfs));
     black.Link();
 
+    TGMatrix4 meshTransform;
+
+    meshTransform(1,1) = 0;
+    meshTransform(2,1) = 1;
+    meshTransform(2,2) = 0;
+    meshTransform(1,2) = 1;
+
     while(pump.Run())
     {
         //glEnableClientState(GL_COLOR_ARRAY);
@@ -46,15 +53,13 @@ int main(int argc, char *argv[])
         shader.Use();
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(camera.GetView());
-        glPushMatrix();
-        glRotated(90, 1,0,0);
 
+        glMultMatrixf(meshTransform);
         mesh.Draw();
         black.Use();
-        glTranslatef(0,0,-0.01);
+        glTranslatef(0,0,0.1);
         mesh.DrawLines();
         
-        glPopMatrix();
         glDisableClientState(GL_VERTEX_ARRAY);
         //glDisableClientState(GL_COLOR_ARRAY);
         render.Present();
