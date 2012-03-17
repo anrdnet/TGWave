@@ -1,7 +1,11 @@
 
+#ifndef TGMESH_H_
+#define TGMESH_H_
+
 #include "core/TGDef.h"
 #include "core/TGDebug.h"
 #include "core/TGVector.h"
+#include "visual/TGShader.h"
 
 class TGMesh
 {
@@ -9,12 +13,15 @@ class TGMesh
     {
         VBO=0,
         ELEMENT=1,
-        COLOR=2
+        Z=2
     };
     GLuint myBuffers[3];
+    GLuint *myDynBuffers;
 
     uint myHeight;
     uint myWidth;
+    uint myBacklog;
+
     uint Index(uint row, uint col)
     {
         Bug(row >= myHeight, "H out of bounds");
@@ -29,21 +36,12 @@ class TGMesh
     {
         return index%myWidth;
     }
-    TGVectorF4 *myData;
+
     public:
     TGMesh(uint height, uint width);
     ~TGMesh();
 
-    void Map();
-    void Unmap();
-
-    TGVectorF4 &E(uint i, uint j)
-    {
-        Bug(myData == NULL, "Access Z when unmaped");
-
-        return myData[Index(i,j)];
-    }
-
-    void Draw();
-    void DrawLines();
+    void Draw(TGShader &shader, real *data, bool lines);
 };
+
+#endif

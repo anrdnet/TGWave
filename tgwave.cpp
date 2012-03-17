@@ -6,12 +6,15 @@
 #include "core/TGMessagePump.h"
 #include "core/TGResourceManager.h"
 #include "visual/TGShader.h"
+#include "model/TGMeshSystem.h"
 
 int main(int argc, char *argv[])
 {
+    uint h = 12;
+    uint w = h;
     TGMessagePump pump;
     TGRender render(0,0);
-    TGMesh mesh(12,12);
+    TGMesh mesh(h,w);
 
     pump.AddHandler(&render);
 
@@ -20,7 +23,7 @@ int main(int argc, char *argv[])
     myMovement.Z = 30;
     myMovement.Y = 10;
     myMovement.X = 12;
-    camera.LookAt(TGVectorF4(12,0,0));
+    camera.LookAt(TGVectorF4(6,0,0));
     camera.Move(myMovement);
     Debug("View is: "<<(string)camera.GetView());
     Debug("View dir:"<<(string)camera.GetViewDirection());
@@ -45,20 +48,21 @@ int main(int argc, char *argv[])
     meshTransform(2,1) = 1;
     meshTransform(2,2) = 0;
     meshTransform(1,2) = 1;
+    TGMeshSystem meshSystem(h,w, 3);
 
     while(pump.Run())
     {
         //glEnableClientState(GL_COLOR_ARRAY);
         glEnableClientState(GL_VERTEX_ARRAY);
-        shader.Use();
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(camera.GetView());
 
         glMultMatrixf(meshTransform);
-        mesh.Draw();
-        black.Use();
+        shader.Use();
+        mesh.Draw(shader, meshSystem.Commit(), false);
         glTranslatef(0,0,0.1);
-        mesh.DrawLines();
+        black.Use();
+        mesh.Draw(black, meshSystem.Commit(), true);
         
         glDisableClientState(GL_VERTEX_ARRAY);
         //glDisableClientState(GL_COLOR_ARRAY);

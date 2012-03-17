@@ -4,15 +4,15 @@
 #include "core/TGVector.h"
 
 TGMesh::TGMesh(uint height, uint width)
-    : myHeight(height) , myWidth(width), myData(NULL)
+    : myHeight(height) , myWidth(width)
 {
     Bug(sizeof(TGVectorF4) != 16, "TGVectorF4-size is not 16");
 
     glGenBuffers(3, myBuffers);
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
     CheckError();
-    glBufferData(GL_ARRAY_BUFFER, sizeof(TGVectorF4)*height*width,
-            NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*2*height*width,
+            NULL, GL_STATIC_DRAW);
     CheckError();
     TGVectorF4 *vdata = static_cast<TGVectorF4*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
     if(vdata == NULL)
@@ -49,6 +49,13 @@ TGMesh::TGMesh(uint height, uint width)
 
     glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
     CheckError();
+    
+    //glGenBuffers(backlog, myDynBuffers);
+    //for(uint i = 0; i < backlog; i++)
+    //{
+    //    glBindBuffer(GL_ARRAY_BUFFER, myDynBuffers[i]);
+    //    glBufferData(GL_ARRAY_BUFFER, height*width*sizeof(GLfloat), NULL, GL_DYNAMIC_DRAW);
+    //}
 }
 
 TGMesh::~TGMesh()
@@ -56,37 +63,18 @@ TGMesh::~TGMesh()
     glDeleteBuffers(3, myBuffers);
 }
 
-void TGMesh::Map()
+void TGMesh::Draw(TGShader &shader, real *data, bool lines)
 {
-    Bug(myData != NULL, "Mapping mapped mesh");
-
-    glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
-    myData = static_cast<TGVectorF4*>(glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE));
-    CheckError();
-}
-
-void TGMesh::Unmap()
-{
-    Bug(myData == NULL, "Unmapping unmapped mesh");
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-    CheckError();
-}
-
-void TGMesh::Draw()
-{
-    glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
+    glBindBuffer(GL_ARRAY_BUFFER, myBuffers[Z]);
+    glBufferData(GL_ARRAY_BUFFER, myHeight*myWidth*sizeof(GLfloat), data, GL_STREAM_DRAW);
+    shader.SetAttribute("Z", myBuffers[Z], 1, GL_FLOAT, 0, 0, 0);
+    shader.SetAttribute("Grid", myBuffers[VBO], 2, GL_FLOAT, 16, 0, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[ELEMENT]);
-    glVertexPointer(4, GL_FLOAT,  0, 0);
     CheckError();
 
-    glDrawElements(GL_TRIANGLE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_SHORT, 0);
+    if(!lines)
+        glDrawElements(GL_TRIANGLE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_SHORT, 0);
+    else
+        glDrawElements(GL_LINE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_SHORT, 0);
     CheckError();
-}
-void TGMesh::DrawLines()
-{
-    glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[ELEMENT]);
-    glVertexPointer(4, GL_FLOAT,  0, 0);
-    CheckError();
-    glDrawElements(GL_LINE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_SHORT, 0);
 }

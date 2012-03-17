@@ -20,7 +20,7 @@ inline void _CheckError(const char *file, uint line)
     if(err != GL_NO_ERROR) 
     {
         Debug("Some error at: "<<file<<":"<<line<<" "<<err);
-        throw TGError(TGErrorCode::GL);
+        throw TGError(string(reinterpret_cast<const char*>(gluErrorString(err)))).Prepend(TGErrorCode::GL);
     }
 }
 

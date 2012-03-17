@@ -2,7 +2,7 @@
 CPPC:=g++
 CPPFLAGS:= -c -Wall -std=c++0x -ggdb -I.
 LD:=g++
-LDFLAGS:= -lGL -lSDL 
+LDFLAGS:= -lGL -lSDL -lGLU
 MMFLAGS:= -I.
 BINDIR:=bin
 CPPSRCFILES:=$(shell find -mindepth 0 -maxdepth 3 -name "*.cpp")
