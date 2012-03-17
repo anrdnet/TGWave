@@ -11,7 +11,7 @@ TGMesh::TGMesh(uint height, uint width)
     glGenBuffers(3, myBuffers);
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
     CheckError();
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*2*height*width,
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*4*height*width,
             NULL, GL_STATIC_DRAW);
     CheckError();
     TGVectorF4 *vdata = static_cast<TGVectorF4*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));

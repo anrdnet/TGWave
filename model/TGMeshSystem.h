@@ -23,9 +23,18 @@ class TGMeshSystem
         return t;
     }
 
-    uint index(uint k, uint i, uint j)
+    uint index(int k, int i, int j)
     {
-        return twrap(k) * myWidth*myHeight + i * myWidth + j;
+        if(i < 0)
+            i += myHeight;
+        if(j < 0)
+            j += myWidth;
+        if(i >= myHeight)
+            i -= myHeight;
+        if(j >= myWidth)
+            j -= myWidth;
+        uint ki = twrap(k);
+        return ki * myWidth*myHeight + i * myWidth + j;
     }
 
     public:
@@ -34,8 +43,14 @@ class TGMeshSystem
     {
         memset(myData, 0, sizeof(GLfloat)*height*width*count);
     }
+
+    ~TGMeshSystem()
+    {
+        delete [] myData;
+        myData = NULL;
+    }
     // k=+1: next step
-    real &operator () (int k, uint i, uint j)
+    real &operator () (int k, int i, int j)
     {
         return myData[index(myCurrent+k-1,i,j)];
     }
@@ -54,6 +69,11 @@ class TGMeshSystem
         real *data = myData + index(myCurrent, 0,0);
         myCurrent = twrap(myCurrent + 1);
         return data;
+    }
+
+    void SetData(real *data)
+    {
+        memcpy(myData + index(myCurrent, 0, 0), data, myHeight*myWidth*sizeof(real));
     }
     
 };

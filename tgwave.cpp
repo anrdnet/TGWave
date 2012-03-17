@@ -7,10 +7,17 @@
 #include "core/TGResourceManager.h"
 #include "visual/TGShader.h"
 #include "model/TGMeshSystem.h"
+#include "model/TGSolver.h"
+#include <cmath>
+
+real init(real x, real y)
+{
+    return exp(-40*((x-0.4)*(x-0.4) + y*y));
+}
 
 int main(int argc, char *argv[])
 {
-    uint h = 12;
+    uint h = 70;
     uint w = h;
     TGMessagePump pump;
     TGRender render(0,0);
@@ -20,10 +27,10 @@ int main(int argc, char *argv[])
 
     TGCamera camera;
     TGVectorF4 myMovement;
-    myMovement.Z = 30;
-    myMovement.Y = 10;
-    myMovement.X = 12;
-    camera.LookAt(TGVectorF4(6,0,0));
+    myMovement.Z = -60;
+    myMovement.Y = 50;
+    myMovement.X = -50;
+    camera.LookAt(TGVectorF4(35,0,35));
     camera.Move(myMovement);
     Debug("View is: "<<(string)camera.GetView());
     Debug("View dir:"<<(string)camera.GetViewDirection());
@@ -49,22 +56,42 @@ int main(int argc, char *argv[])
     meshTransform(2,2) = 0;
     meshTransform(1,2) = 1;
     TGMeshSystem meshSystem(h,w, 3);
+    TGExplicitSolver solver(2./float(w),2./float(h), 0.2);
+
+    real *state = new real[h*w];
+    for(uint i = 0; i < h; i++)
+    {
+        for(uint j = 0; j < w; j++)
+        {
+            state[i*w+j] = w/2*init((2*i/float(h)) - 1,(2*j/float(w)) - 1 );
+        }
+    }
+
+    meshSystem.SetData(state);
+    meshSystem.Commit();
+    meshSystem.SetData(state);
+
+    delete [] state;
 
     while(pump.Run())
     {
         //glEnableClientState(GL_COLOR_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
+        //glEnableClientState(GL_VERTEX_ARRAY);
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(camera.GetView());
 
         glMultMatrixf(meshTransform);
         shader.Use();
-        mesh.Draw(shader, meshSystem.Commit(), false);
+        real *data = meshSystem.Commit();
+        mesh.Draw(shader, data, false);
         glTranslatef(0,0,0.1);
         black.Use();
-        mesh.Draw(black, meshSystem.Commit(), true);
+        mesh.Draw(black, data, true);
+        solver.Advance(meshSystem, 1./120);
+        meshSystem.Commit();
+        solver.Advance(meshSystem, 1./120);
         
-        glDisableClientState(GL_VERTEX_ARRAY);
+        //glDisableClientState(GL_VERTEX_ARRAY);
         //glDisableClientState(GL_COLOR_ARRAY);
         render.Present();
     }
