@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     meshTransform(2,2) = 0;
     meshTransform(1,2) = 1;
     TGMeshSystem meshSystem(h,w, 3);
-    TGExplicitSolver solver(2./float(w),2./float(h), 0.2);
+    TGExplicitSolver solver(2./float(w),2./float(h), 5);
 
     real *state = new real[h*w];
     for(uint i = 0; i < h; i++)
@@ -87,9 +87,7 @@ int main(int argc, char *argv[])
         glTranslatef(0,0,0.1);
         black.Use();
         mesh.Draw(black, data, true);
-        solver.Advance(meshSystem, 1./120);
-        meshSystem.Commit();
-        solver.Advance(meshSystem, 1./120);
+        solver.Advance(meshSystem, 1./60);
         
         //glDisableClientState(GL_VERTEX_ARRAY);
         //glDisableClientState(GL_COLOR_ARRAY);

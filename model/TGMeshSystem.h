@@ -25,14 +25,7 @@ class TGMeshSystem
 
     uint index(int k, int i, int j)
     {
-        if(i < 0)
-            i += myHeight;
-        if(j < 0)
-            j += myWidth;
-        if(i >= myHeight)
-            i -= myHeight;
-        if(j >= myWidth)
-            j -= myWidth;
+        Bug(i < 0 || i >= (int)myHeight || j < 0 || j >= (int)myWidth, "Invalid mesh system index");
         uint ki = twrap(k);
         return ki * myWidth*myHeight + i * myWidth + j;
     }
