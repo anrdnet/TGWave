@@ -8,7 +8,7 @@ void TGRender::Initialize(int width, int height, bool fullscreen) throw(TGError)
 
     const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
 
-    if(vinfo == nullptr)
+    if(vinfo == NULL)
         throw TGError(SDL_GetError()).Prepend(TGErrorCode::SdlVideoInfoNull);
 
     byte bpp = vinfo->vfmt->BitsPerPixel;
