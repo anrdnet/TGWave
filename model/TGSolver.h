@@ -20,9 +20,10 @@ class TGSolver
 
 class TGExplicitSolver : public TGSolver
 {
+    real mu;
     public:
-    TGExplicitSolver(real dx, real dy, real c)
-        : TGSolver(dx,dy,c) { }
+    TGExplicitSolver(real dx, real dy, real c, real mu)
+        : TGSolver(dx,dy,c), mu(mu) { }
 
     virtual void Advance(TGMeshSystem &system, real dt);
 };

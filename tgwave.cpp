@@ -12,12 +12,12 @@
 
 real init(real x, real y)
 {
-    return 0.7*exp(-200*((x-0.4)*(x-0.4) + (y-0.4)*(y-0.4)));
+    return exp(-200*((x-0.4)*(x-0.4) + (y-0.4)*(y-0.4)));
 }
 
 int main(int argc, char *argv[])
 {
-    uint h = 120;
+    uint h = 70;
     uint w = h;
     TGMessagePump pump;
     TGRender render(0,0);
@@ -27,9 +27,9 @@ int main(int argc, char *argv[])
 
     TGCamera camera;
     TGVectorF4 myMovement;
-    myMovement.Z = -60;
-    myMovement.Y = 70;
-    myMovement.X = -50;
+    myMovement.Z = -50;
+    myMovement.Y = 60;
+    myMovement.X = -40;
     camera.LookAt(TGVectorF4(35,0,35));
     camera.Move(myMovement);
     Debug("View is: "<<(string)camera.GetView());
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     meshTransform(2,2) = 0;
     meshTransform(1,2) = 1;
     TGMeshSystem meshSystem(h,w, 3);
-    TGExplicitSolver solver(2./float(w),2./float(h), 5);
+    TGExplicitSolver solver(2./float(w),2./float(h), 5, 0.01);
 
     real *state = new real[h*w];
     for(uint i = 0; i < h; i++)
@@ -87,8 +87,6 @@ int main(int argc, char *argv[])
         glTranslatef(0,0,0.1);
         black.Use();
         mesh.Draw(black, data, true);
-        solver.Advance(meshSystem, 1./60);
-        meshSystem.Commit();
         solver.Advance(meshSystem, 1./60);
         
         //glDisableClientState(GL_VERTEX_ARRAY);
