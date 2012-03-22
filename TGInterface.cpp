@@ -17,7 +17,7 @@ real th = 2.0;
 real tw = 3.4;
 real dx = tw/float(w);
 real dy = th/float(h);
-TGExplicitSolver solver(dx, dy, 5, 0.02);
+TGExplicitSolver solver(dx, dy, 15, 0.02);
 TGMeshSystem meshSystem(h,w, 3);
 TGClick Clicker(meshSystem, dx, dy);
 TGMesh mesh(h,w, dx, dy);

@@ -1,8 +1,8 @@
 
 CPPC:=g++
-CPPFLAGS:= -c -Wall -std=c++0x -I. -O2
+CPPFLAGS:= -c -Wall -std=c++0x -I. -O3 -ffast-math
 LD:=g++
-LDFLAGS:= -lGL -lSDL -lGLU  
+LDFLAGS:= -lGL -lSDL -lGLU -O3 -ffast-math
 MMFLAGS:= -I.
 BINDIR:=bin
 CPPSRCFILES:=$(shell find -mindepth 0 -maxdepth 3 -name "*.cpp")
@@ -20,7 +20,7 @@ test: all
 -include $(DEPS)
 
 tgwave: $(OBJFILES)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(LD) -o $@ $^ $(LDFLAGS)
 
 $(BINDIR)/%.o: %.cpp Makefile
 	$(CPPC) $(CPPFLAGS) -o $@ $<
@@ -32,3 +32,5 @@ clean:
 	-@ rm -f tgwave
 	-@ rm -f gmon.out
 	-@ find $(BINDIR) -type f | xargs -- rm -f
+
+run: test
