@@ -1,8 +1,8 @@
 
 CPPC:=g++
-CPPFLAGS:= -c -Wall -std=c++0x -I. -ggdb
+CPPFLAGS:= -c -Wall -std=c++0x -I. -O2
 LD:=g++
-LDFLAGS:= -lGL -lSDL -lGLU 
+LDFLAGS:= -lGL -lSDL -lGLU  
 MMFLAGS:= -I.
 BINDIR:=bin
 CPPSRCFILES:=$(shell find -mindepth 0 -maxdepth 3 -name "*.cpp")

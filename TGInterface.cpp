@@ -11,8 +11,8 @@
 #include <GL/gl.h>
 #include <SDL/SDL.h>
 
-uint h = 75;
-uint w = 128;
+uint h = 75*4;
+uint w = 128*4;
 real th = 2.0;
 real tw = 3.4;
 real dx = tw/float(w);
@@ -186,5 +186,5 @@ void Touch(float x, float y)
     Bug(!Unproject(x,y, click), "Unproject failed");
     Debug("Got: %g; %g; %g", click.X, click.Y, click.Z);
 
-    Clicker.Click(click.X, click.Z);
+    Clicker.Click(0.5/*click.X*/, /*click.Z*/0.5);
 }

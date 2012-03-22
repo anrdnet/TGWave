@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 
     ChangeSize(render.GetSize().Width, render.GetSize().Height);
     bool running = true;
+    Touch(700, 370);
     while(running)
     {
         SDL_Event event;
