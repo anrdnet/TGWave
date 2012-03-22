@@ -1,8 +1,8 @@
 
 CPPC:=g++
-CPPFLAGS:= -c -Wall -std=c++0x -ggdb -I.
+CPPFLAGS:= -c -Wall -std=c++0x -I. -ggdb
 LD:=g++
-LDFLAGS:= -lGL -lSDL -lGLU
+LDFLAGS:= -lGL -lSDL -lGLU 
 MMFLAGS:= -I.
 BINDIR:=bin
 CPPSRCFILES:=$(shell find -mindepth 0 -maxdepth 3 -name "*.cpp")
@@ -29,4 +29,6 @@ $(BINDIR)/%.o: %.cpp Makefile
 .PHONY: clean
 
 clean:
-	-@ rm -f tgwave $(BINDIR)/*.o $(BINDIR)/*.d $(BINDIR)/*/*.o $(BINDIR)/*/*.d $(BINDIR)/*/*/*.o $(BINDIR)/*/*/*.d
+	-@ rm -f tgwave
+	-@ rm -f gmon.out
+	-@ find $(BINDIR) -type f | xargs -- rm -f

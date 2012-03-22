@@ -4,8 +4,8 @@
 
 #include <cmath>
 #include "core/TGDef.h"
-#include "core/TGError.h"
 #include "core/TGVector.h"
+#include "core/TGDebug.h"
 
 class TGMatrix4
 {
@@ -20,6 +20,7 @@ class TGMatrix4
         i = index % N;
         j = index / N;
     }
+    void operator =(TGMatrix4 &other);
     public:
     static const TGMatrix4 Identity;
 
@@ -36,18 +37,18 @@ class TGMatrix4
 
     TGMatrix4(const real data[N*N], bool rowMajor = true);
 
+    TGMatrix4(const TGMatrix4 &other);
+    TGMatrix4 &operator =(const TGMatrix4 &other);
 
     real& operator() (const int i, const int j)
     {
-        if(i >= N || j >= N)
-            throw TGError(TGErrorCode::MatOutOfBounds);
+        Bug(i >= N || j >= N, "Matrix out of bounds");
         return myData[Index(i, j)];
     }
 
     real operator() (const int i, const int j) const
     {
-        if(i >= N || j >= N)
-            throw TGError(TGErrorCode::MatOutOfBounds);
+        Bug(i >= N || j >= N, "Matrix out of bounds");
         return myData[Index(i, j)];
     }
 
@@ -63,14 +64,17 @@ class TGMatrix4
     void CreateRotationY(real angle);
     void CreateRotationZ(real angle);
     void CreateTranslation(const TGVectorF4 &pos);
+    real Determinant();
+    bool Invert();
 
-    TGMatrix4 operator * (const TGMatrix4 b) const;
+    TGMatrix4 operator * (const TGMatrix4 &b) const;
+    TGVectorF4 operator * (const TGVectorF4 &b) const;
     operator const real*() const
     {
         return myData;
     }
 
-    operator const string() const;
+    //operator const char*() const;
 };
 
 #endif

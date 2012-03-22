@@ -21,6 +21,8 @@ class TGMesh
     uint myHeight;
     uint myWidth;
     uint myBacklog;
+    real myDx;
+    real myDy;
 
     uint Index(uint row, uint col)
     {
@@ -38,9 +40,10 @@ class TGMesh
     }
 
     public:
-    TGMesh(uint height, uint width);
+    TGMesh(uint height, uint width, real dx, real dy);
     ~TGMesh();
 
+    void Create();
     void Draw(TGShader &shader, real *data, bool lines);
 };
 

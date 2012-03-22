@@ -7,9 +7,9 @@
 
 class TGMeshSystem
 {
-    uint myHeight;
-    uint myWidth;
-    uint myCount;
+    const uint myHeight;
+    const uint myWidth;
+    const uint myCount;
     uint myCurrent;
     real *myData;
 
@@ -31,7 +31,7 @@ class TGMeshSystem
     }
 
     public:
-    TGMeshSystem(uint width, uint height, uint count)
+    TGMeshSystem(uint height, uint width, uint count)
         : myHeight(height), myWidth(width), myCount(count), myCurrent(0), myData(new real[height*width*count])
     {
         memset(myData, 0, sizeof(GLfloat)*height*width*count);

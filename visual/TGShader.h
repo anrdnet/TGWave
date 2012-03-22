@@ -3,7 +3,8 @@
 #define TGSHADER_H_
 
 #include "core/TGDef.h"
-#include <string>
+#include "GL/gl.h"
+#include "core/TGMatrix.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ enum TGShaderType
 
 class TGShader
 {
+    GLuint myTransformLoc;
     uint myProgram;
     uint myShaders[2];
 
@@ -22,11 +24,16 @@ class TGShader
     TGShader();
     ~TGShader();
 
-    void SetShader(TGShaderType, const string shaderCode);
+    void Create();
+
+    void SetTransform(const TGMatrix4 &matrix);
+    void SetUniformf(const char *name, float value);
+
+    void SetShader(TGShaderType, const char *shaderCode);
     void Link();
     void Use();
 
-    void SetAttribute(string name, GLuint vbo, uint elementCount, GLenum type, uint stride, uint offset, uint divisor = 0);
+    void SetAttribute(const char *name, GLuint vbo, uint elementCount, GLenum type, uint stride, uint offset, uint divisor = 0);
 };
 
 #endif

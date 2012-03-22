@@ -27,8 +27,6 @@ void TGRender::Initialize(int width, int height, bool fullscreen) throw(TGError)
     myCurrentSize.Height = myScreen->h;
     myCurrentSize.Width = myScreen->w;
 
-    SetProjection(myCurrentSize);
-
     Debug("Context successfully created");
 }
 
@@ -57,29 +55,3 @@ void TGRender::InitDefState()
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
 }
-
-bool TGRender::HandleMessage(SDL_Event &message)
-{
-    switch(message.type)
-    {
-        case SDL_VIDEORESIZE:
-            myCurrentSize.Width = message.resize.w;
-            myCurrentSize.Height = message.resize.h;
-            SetProjection(myCurrentSize);
-            return false;
-        default:
-            return false;
-    }
-}
-
-void TGRender::SetProjection(TGSizeInfo &size)
-{
-    real ratio = (real)size.Width / size.Height;
-    glViewport(0,0,size.Width,size.Height);
-    glMatrixMode(GL_PROJECTION);
-    TGMatrix4 proj;
-    proj.CreatePerspective(3.14/4, ratio, 0.1, 500);
-    glLoadMatrixf(proj);
-    Debug("Projection ("<<size.Width<<":"<<size.Height<<") set to "<<(string)proj);
-}
-

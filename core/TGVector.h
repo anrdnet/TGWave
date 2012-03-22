@@ -2,9 +2,7 @@
 #ifndef TGVECTOR_H_
 #define TGVECTOR_H_
 
-#include <string>
 #include "core/TGDef.h"
-#include <sstream>
 #include <cmath>
 
 using namespace std;
@@ -133,7 +131,7 @@ class TGVectorT4
         return X >= b.X && Y >= b.Y && Z >= b.Z && W >= b.W;
     }
 
-    operator const string () const;
+    //operator const string () const;
 
     real Length()
     {
@@ -147,16 +145,16 @@ class TGVectorT4
 
 } __attribute__((packed));
 
-template<typename T>
-TGVectorT4<T>::operator const string () const
-{
-    ostringstream out;
-    out<<"( ";
-    for(int i = 0; i < 3; i++)
-        out<<Elements[i]<<", ";
-    out<<Elements[3]<<" )";
-    return out.str();
-}
+//template<typename T>
+//TGVectorT4<T>::operator const string () const
+//{
+//    ostringstream out;
+//    out<<"( ";
+//    for(int i = 0; i < 3; i++)
+//        out<<Elements[i]<<", ";
+//    out<<Elements[3]<<" )";
+//    return out.str();
+//}
 
 template<typename T>
 void TGVectorT4<T>::Floor()

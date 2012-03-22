@@ -9,9 +9,12 @@
 class TGCamera
 {
     TGMatrix4 myView;
+    TGMatrix4 myProjection;
+    TGMatrix4 my2DProjection;
     TGVectorF4 myLookAt;
     TGVectorF4 myPosition;
     void Create();
+    bool my2D;
     public:
     TGVectorF4 &Move(TGVectorF4 &offset);
     TGVectorF4 &Orbit(real az, real el);
@@ -20,12 +23,20 @@ class TGCamera
     {
         return myView;
     }
+
+    TGMatrix4 &GetProjection()
+    {
+        if(my2D)
+            return my2DProjection;
+        return myProjection;
+    }
+
     TGVectorF4 GetPosition() 
     {
         return myPosition;
     }
 
-    void SetPostition(const TGVectorF4 &pos)
+    void SetPosition(const TGVectorF4 &pos)
     {
         myPosition = pos;
         Create();
@@ -42,6 +53,8 @@ class TGCamera
     {
         return TGVectorF4(-myView(2,0), -myView(2,1), -myView(2,2));
     }
+
+    void MakeProjection(real width, real height);
 };
 
 #endif

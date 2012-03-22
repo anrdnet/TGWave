@@ -10,7 +10,6 @@
 #include "core/TGDef.h"
 #include "core/TGError.h"
 #include "core/TGDebug.h"
-#include "core/TGMessageHandler.h"
 #include "core/TGMatrix.h"
 
 struct TGSizeInfo
@@ -19,7 +18,7 @@ struct TGSizeInfo
     int Height;
 };
 
-class TGRender : public TGMessageHandler
+class TGRender
 {
     TGSizeInfo myCurrentSize;
 
@@ -32,10 +31,6 @@ class TGRender : public TGMessageHandler
 
     TGRender(int width, int height) throw(TGError);
     ~TGRender();
-
-    virtual bool HandleMessage(SDL_Event &message);
-
-    void SetProjection(TGSizeInfo &size);
 
     void Present()
     {
