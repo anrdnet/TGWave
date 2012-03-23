@@ -17,7 +17,7 @@ real th = 2.0;
 real tw = 3.4;
 real dx = tw/float(w);
 real dy = th/float(h);
-TGExplicitSolver solver(dx, dy, 15, 0.02);
+TGExplicitSolver solver(dx, dy, 10, 0.02);
 TGMeshSystem meshSystem(h,w, 3);
 TGClick Clicker(meshSystem, dx, dy);
 TGMesh mesh(h,w, dx, dy);
@@ -99,7 +99,7 @@ void Draw()
     if(LastTime != 0)
         elapsed = time - LastTime;
     LastTime = time;
-    if(elapsed > 0.1)
+    if(elapsed > 1./30)
     {
         Debug("Late frame");
         elapsed = 1./60;

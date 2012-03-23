@@ -36,7 +36,7 @@ void TGMesh::Create()
     delete [] vdata;
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[ELEMENT]);
     CheckError();
-    ushort *edata = new ushort[(2*myWidth-1)*(myHeight-1)+1];
+    GLuint *edata = new GLuint[(2*myWidth-1)*(myHeight-1)+1];
     if(edata == NULL)
         CheckError();
 
@@ -53,7 +53,7 @@ void TGMesh::Create()
     edata[(2*myWidth-1)*(myHeight-1)] = Index(myHeight-1, (myHeight & 1) == 1 ? 0 : myWidth-1);
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-            ((2*myWidth-1)*(myHeight-1)+1)*sizeof(ushort), edata, GL_STATIC_DRAW);
+            ((2*myWidth-1)*(myHeight-1)+1)*sizeof(GLuint), edata, GL_STATIC_DRAW);
     CheckError();
     delete [] edata;
     
@@ -85,8 +85,8 @@ void TGMesh::Draw(TGShader &shader, real *data, bool lines)
     CheckError();
 
     if(!lines)
-        glDrawElements(GL_TRIANGLE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_SHORT, 0);
+        glDrawElements(GL_TRIANGLE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_INT, 0);
     else
-        glDrawElements(GL_LINE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_SHORT, 0);
+        glDrawElements(GL_LINE_STRIP, (2*myWidth-1)*(myHeight-1) + 1, GL_UNSIGNED_INT, 0);
     CheckError();
 }
