@@ -4,7 +4,7 @@
 
 real TGClick::Val(real x, real y, real centerX, real centerY)
 {
-    return myHeight*exp(-myShape*((x-centerX)*(x-centerX) + (y-centerY)*(y-centerY)));
+    return myScale * myHeight*exp(-myShape/myScale*((x-centerX)*(x-centerX) + (y-centerY)*(y-centerY)));
 }
 
 const uint k = 0;

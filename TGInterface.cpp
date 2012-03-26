@@ -11,13 +11,13 @@
 #include <GL/gl.h>
 #include <SDL/SDL.h>
 
-uint h = 75*4;
-uint w = 128*4;
+uint h = 75*2;
+uint w = 128*2;
 real th = 2.0;
 real tw = 3.4;
 real dx = tw/float(w);
 real dy = th/float(h);
-TGExplicitSolver solver(dx, dy, 10, 0.02);
+TGExplicitSolver solver(dx, dy, 20, 0.05);
 TGMeshSystem meshSystem(h,w, 3);
 TGClick Clicker(meshSystem, dx, dy);
 TGMesh mesh(h,w, dx, dy);
@@ -111,7 +111,9 @@ void Draw()
         frameCount = 0;
     }
     frameCount++;
-    solver.Advance(meshSystem, elapsed);
+    solver.Advance(meshSystem, elapsed/2);
+    meshSystem.Commit();
+    solver.Advance(meshSystem, elapsed/2);
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     shader.Use();
@@ -120,10 +122,10 @@ void Draw()
 
     real *data = meshSystem.Commit();
     mesh.Draw(shader, data, false);
-    black.Use();
-    meshTransform(1,3) = 0.01;
-    black.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);
-    mesh.Draw(black, data, true);
+    //black.Use();
+    //meshTransform(1,3) = 0.01;
+    //black.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);
+    //mesh.Draw(black, data, true);
 }
 
 void ChangeSize(int width, int height)
@@ -186,5 +188,5 @@ void Touch(float x, float y)
     Bug(!Unproject(x,y, click), "Unproject failed");
     Debug("Got: %g; %g; %g", click.X, click.Y, click.Z);
 
-    Clicker.Click(0.5/*click.X*/, /*click.Z*/0.5);
+    Clicker.Click(click.X, click.Z);
 }

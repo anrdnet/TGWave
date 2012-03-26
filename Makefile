@@ -1,6 +1,6 @@
 
 CPPC:=g++
-CPPFLAGS:= -c -Wall -std=c++0x -I. -O3 -ffast-math
+CPPFLAGS:= -c -Wall -std=c++0x -I. -O3 -ffast-math 
 LD:=g++
 LDFLAGS:= -lGL -lSDL -lGLU -O3 -ffast-math
 MMFLAGS:= -I.
