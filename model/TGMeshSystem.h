@@ -10,6 +10,7 @@ class TGMeshSystem
     const uint myHeight;
     const uint myWidth;
     const uint myCount;
+    real myDrift;
     uint myCurrent;
     real *myData;
 
@@ -46,6 +47,11 @@ class TGMeshSystem
     real &operator () (int k, int i, int j)
     {
         return myData[index(myCurrent+k-1,i,j)];
+    }
+
+    real &Drift()
+    {
+        return myDrift;
     }
 
     uint GetHeight()

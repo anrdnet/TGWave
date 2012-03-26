@@ -19,8 +19,8 @@ class TGClick
     TGClick(TGMeshSystem &mesh, real dx, real dy)
         :myDx(dx), myDy(dy), myMesh(mesh)
     {
-        myShape = 5000;
-        myHeight = 1;
+        myShape = 100;
+        myHeight = 1.5;
         myScale = 1;
     }
     

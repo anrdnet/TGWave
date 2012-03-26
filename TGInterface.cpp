@@ -15,9 +15,10 @@ uint h = 75*2;
 uint w = 128*2;
 real th = 2.0;
 real tw = 3.4;
+real driftSpeed = 0.01;
 real dx = tw/float(w);
 real dy = th/float(h);
-TGExplicitSolver solver(dx, dy, 20, 0.05);
+TGExplicitSolver solver(dx, dy, 10, 0.01);
 TGMeshSystem meshSystem(h,w, 3);
 TGClick Clicker(meshSystem, dx, dy);
 TGMesh mesh(h,w, dx, dy);
@@ -77,7 +78,7 @@ void Create(const char *vs, const char *fs, const char *bl)
     black.Link();
     Debug("Got shaders");
     shader.Use();
-    shader.SetUniformf("ColorScale", 16);
+    shader.SetUniformf("ColorScale", 1);
 
     glClearColor(100.0/256,149.0/256,237.0/256,1);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -91,6 +92,7 @@ inline real GetTime()
 }
 
 uint frameCount = 0;
+real CurrentAdjustment = 0;
 
 void Draw()
 {
@@ -120,6 +122,11 @@ void Draw()
     meshTransform(1,3) = 0;
     shader.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);
 
+    real adjdiff = meshSystem.Drift() - CurrentAdjustment;
+    CurrentAdjustment += ((adjdiff < 0 ? -1 : 1) * fminf(fabsf(adjdiff), driftSpeed*elapsed));
+    Debug("Avg: %g\nDiff: %g", meshSystem.Drift(), adjdiff);
+
+    shader.SetUniformf("ZAdjustment", -CurrentAdjustment);
     real *data = meshSystem.Commit();
     mesh.Draw(shader, data, false);
     //black.Use();

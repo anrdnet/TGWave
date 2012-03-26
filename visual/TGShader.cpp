@@ -44,7 +44,7 @@ void TGShader::SetUniformf(const char *name, float value)
 {
     GLint loc = glGetUniformLocation(myProgram, name);
     CheckError();
-    Debug("Uniform %d is %s", loc, name);
+    //Debug("Uniform %d is %s", loc, name);
     Bug(loc == -1, "Uniform not found");
     glUniform1f(loc, value);
     CheckError();
