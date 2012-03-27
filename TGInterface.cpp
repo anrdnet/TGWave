@@ -81,7 +81,8 @@ void Create(const char *vs, const char *fs, const char *bl)
     black.Link();
     Debug("Got shaders");
 
-    glClearColor(100.0/256,149.0/256,237.0/256,1);
+    //glClearColor(100.0/256,149.0/256,237.0/256,1);
+    glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

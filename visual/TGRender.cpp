@@ -50,9 +50,9 @@ TGRender::~TGRender()
 
 void TGRender::InitDefState()
 {
-    glClearColor(100.0/256,149.0/256,237.0/256,1);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
+    //glClearColor(100.0/256,149.0/256,237.0/256,1);
+    //glClear(GL_COLOR_BUFFER_BIT);
+    //glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
 }
 

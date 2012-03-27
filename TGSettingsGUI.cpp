@@ -19,7 +19,6 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myColorLabel("Farge"),
     myParams(params)
 {
-    // Sets the border width of the window.
     set_border_width(10);
     
     myCScale.set_value(params.c);
@@ -29,8 +28,6 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myScaleScale.set_value(params.Scale);
     myColorScale.set_value(params.Color);
 
-    // When the button receives the "clicked" signal, it will call the
-    // on_button_clicked() method defined below.
     myResetButton.signal_clicked().connect(sigc::mem_fun(*this,
                 &TGSettingsGUI::on_reset_clicked));
     myCScale.signal_value_changed().connect(sigc::mem_fun(*this,
@@ -44,6 +41,7 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myColorScale.signal_value_changed().connect(sigc::mem_fun(*this,
                 &TGSettingsGUI::on_value_changed));
     
+    myMainPanel.pack_end(myResetButton);
     myMainPanel.pack_end(myCScale);
     myMainPanel.pack_end(myCLabel);
     myMainPanel.pack_end(myHeightScale);
@@ -56,9 +54,7 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myMainPanel.pack_end(myScaleLabel);
     myMainPanel.pack_end(myColorScale);
     myMainPanel.pack_end(myColorLabel);
-    myMainPanel.pack_end(myResetButton);
     
-    // This packs the button into the Window (a container).
     add(myMainPanel);
     
     show_all();
