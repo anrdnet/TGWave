@@ -10,7 +10,7 @@
 #include <cmath>
 #include <GL/gl.h>
 #include <SDL/SDL.h>
-
+//HE IHE I EHI!
 uint h = 75*2;
 uint w = 128*2;
 real th = 2.0;
