@@ -10,6 +10,9 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
     const uint h = phi.GetHeight();
     const uint w = phi.GetWidth();
     const real invdt = 1./dt;
+    const real c2 = myParams.c * myParams.c;
+    const real mufactor = 4./3 * myParams.mu;
+    const real invdxdy = 1./(dx*dy);
     for (uint i = 1; i < h-1; i++)
     {
         for(uint j = 1; j < w-1; j++)

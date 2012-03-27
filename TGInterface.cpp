@@ -15,12 +15,13 @@ uint h = 75*2;
 uint w = 128*2;
 real th = 2.0;
 real tw = 3.4;
-real driftSpeed = 0.01;
 real dx = tw/float(w);
 real dy = th/float(h);
-TGExplicitSolver solver(dx, dy, 10, 0.01);
+SimParams Params;
+SimParams newParams;
+TGExplicitSolver solver(dx, dy, Params);
 TGMeshSystem meshSystem(h,w, 3);
-TGClick Clicker(meshSystem, dx, dy);
+TGClick Clicker(meshSystem, dx, dy, Params);
 TGMesh mesh(h,w, dx, dy);
 TGCamera camera;
 TGMatrix4 meshTransform;
@@ -30,8 +31,9 @@ real LastTime = 0;
 real LastFPS = 0;
 uint wWidth;
 uint wHeight;
+pthread_mutex_t SimParams::Lock;
 
-void Initialize()
+SimParams &Initialize()
 {
     Debug("Initialize native");
     Debug("h: %d, w: %d, th:%g, tw:%g", h, w, th, tw);
@@ -61,6 +63,7 @@ void Initialize()
     meshSystem.SetData(state);
 
     delete [] state;
+    return newParams;
 }
 
 void Create(const char *vs, const char *fs, const char *bl)
@@ -77,8 +80,6 @@ void Create(const char *vs, const char *fs, const char *bl)
     shader.Link();
     black.Link();
     Debug("Got shaders");
-    shader.Use();
-    shader.SetUniformf("ColorScale", 1);
 
     glClearColor(100.0/256,149.0/256,237.0/256,1);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -113,18 +114,36 @@ void Draw()
         frameCount = 0;
     }
     frameCount++;
+    
+    if(pthread_mutex_trylock(&SimParams::Lock) == 0)
+    {
+        Params = newParams;
+        newParams.Reset = false;
+        pthread_mutex_unlock(&SimParams::Lock);
+    }
+
+    if(Params.Reset)
+    {
+        meshSystem.Reset();
+        meshSystem.Drift() = 0;
+        CurrentAdjustment = 0;
+        Params.Reset = false;
+    }
+
     solver.Advance(meshSystem, elapsed/2);
     meshSystem.Commit();
     solver.Advance(meshSystem, elapsed/2);
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     shader.Use();
+    shader.SetUniformf("ColorScale", Params.Color);
     meshTransform(1,3) = 0;
     shader.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);
 
     real adjdiff = meshSystem.Drift() - CurrentAdjustment;
-    CurrentAdjustment += ((adjdiff < 0 ? -1 : 1) * fminf(fabsf(adjdiff), driftSpeed*elapsed));
-    Debug("Avg: %g\nDiff: %g", meshSystem.Drift(), adjdiff);
+    real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);
+    CurrentAdjustment += ((adjdiff < 0 ? -1 : 1) * fminf(fabsf(adjdiff), Params.DriftSpeed*elapsed*driftScale));
+    //Debug("Avg: %g\nDiff: %g", meshSystem.Drift(), adjdiff);
 
     shader.SetUniformf("ZAdjustment", -CurrentAdjustment);
     real *data = meshSystem.Commit();
@@ -133,6 +152,13 @@ void Draw()
     //meshTransform(1,3) = 0.01;
     //black.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);
     //mesh.Draw(black, data, true);
+
+    //real a = 0;
+    //for (int i = 0; i < 1000000; i++)
+    //{
+    //    a = (a+1)*(a+1)/(a+2);
+    //}
+    //Debug("%g", a);
 }
 
 void ChangeSize(int width, int height)
@@ -140,6 +166,7 @@ void ChangeSize(int width, int height)
     wWidth = width;
     wHeight = height;
 
+    Debug("Height: %d; Width: %d", height, width);
     glViewport(0,0,width,height);
     camera.MakeProjection(width, height);
 }

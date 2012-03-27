@@ -55,3 +55,14 @@ void TGRender::InitDefState()
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
 }
+
+void TGRender::Resize(uint width, uint height)
+{
+    if(!(myScreen = SDL_SetVideoMode(width, height, 0, SDL_OPENGL | SDL_RESIZABLE)))
+    {
+        throw TGError(SDL_GetError()).Prepend(TGErrorCode::SdlInitWindow);
+    }
+
+    myCurrentSize.Height = myScreen->h;
+    myCurrentSize.Width = myScreen->w;
+}

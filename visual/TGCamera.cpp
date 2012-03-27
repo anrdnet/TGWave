@@ -80,10 +80,9 @@ TGVectorF4 &TGCamera::Zoom(real factor)
     return myPosition;
 }
 
-
 void TGCamera::MakeProjection(real width, real height)
 {
-    real ratio = (real)width / height;
+    real ratio = width / height;
     myProjection.CreatePerspective(3.14/4, ratio, 0.1, 50);
     my2DProjection.CreateOrthogonal(-ratio,ratio,-1,1, 0.1, 50);
 }

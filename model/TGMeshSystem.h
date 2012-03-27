@@ -74,7 +74,19 @@ class TGMeshSystem
     {
         memcpy(myData + index(myCurrent, 0, 0), data, myHeight*myWidth*sizeof(real));
     }
-    
+    void Reset()
+    {
+        for(uint k = 0; k < myCount; k++)
+        {
+            for(uint i = 0; i < myHeight; i++)
+            {
+                for(uint j = 0; j < myWidth; j++)
+                {
+                    (*this)(k,i,j) = 0;
+                }
+            }
+        }
+    }   
 };
 
 #endif

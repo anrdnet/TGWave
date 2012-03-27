@@ -3,33 +3,23 @@
 #define TGCLICK_H_
 
 #include "model/TGMeshSystem.h"
+#include "TGInterface.h"
 
 class TGClick
 {
-    real myShape;
-    real myHeight;
-    real myScale;
     real myDx;
     real myDy;
+    SimParams &myParams;
     TGMeshSystem &myMesh;
 
     real Val(real x, real y, real centerX, real centerY);
 
     public:
-    TGClick(TGMeshSystem &mesh, real dx, real dy)
-        :myDx(dx), myDy(dy), myMesh(mesh)
+    TGClick(TGMeshSystem &mesh, real dx, real dy, SimParams &params)
+        :myDx(dx), myDy(dy), myParams(params), myMesh(mesh)
     {
-        myShape = 100;
-        myHeight = 1.5;
-        myScale = 1;
     }
     
-    void SetParams(real shape, real height)
-    {
-        myShape = shape;
-        myHeight = height;
-    }
-
     void Click(real x, real y);
 };
 

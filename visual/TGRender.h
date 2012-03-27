@@ -41,6 +41,7 @@ class TGRender
     {
         return myCurrentSize;
     }
+    void Resize(uint width, uint height);
 };
 
 #endif

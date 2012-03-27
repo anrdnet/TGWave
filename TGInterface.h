@@ -2,7 +2,34 @@
 #ifndef TGINTERFACE_H_
 #define TGINTERFACE_H_
 
-void Initialize();
+#include "core/TGDef.h"
+#include "SDL/SDL.h"
+#include <pthread.h>
+
+struct SimParams
+{
+    static pthread_mutex_t Lock;
+    SimParams()
+    {
+        DriftSpeed = 0.05;
+        c = 10;
+        mu = 0.1;
+        NewHeight = 1;
+        Shape = 100;
+        Scale = 1;
+        Color = 1;
+    }
+    real DriftSpeed;
+    real c;
+    real mu;
+    real NewHeight;
+    real Shape;
+    real Scale;
+    real Color;
+    bool Reset;
+};
+
+SimParams &Initialize();
 void Create(const char *vs, const char *fs, const char *bl);
 
 void Draw();

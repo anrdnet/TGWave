@@ -1,15 +1,38 @@
 
 #include <iostream>
+#include <SDL/SDL.h>
+#include <cmath>
 #include "visual/TGRender.h"
 #include "core/TGResourceManager.h"
 #include "TGInterface.h"
-#include <SDL/SDL.h>
-#include <cmath>
+#include "TGSettingsGUI.h"
+
+struct StartInfo
+{
+    int argc;
+    char **argv;
+    SimParams &Params;
+    StartInfo(int margc, char **margv, SimParams &mParams)
+        : argc(margc), argv(margv), Params(mParams) { }
+};
+
+int StartGUI(void *start)
+{
+    StartInfo *info = static_cast<StartInfo*>(start);
+    TGSettingsGUI::RunGUI(info->argc, info->argv, info->Params);
+    delete info;
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
-    Initialize();
+    if(pthread_mutex_init(&SimParams::Lock, NULL) != 0)
+        Bug(true, "Failed to make mutex");
+    SimParams &params = Initialize();
     TGRender render(0,0);
+
+    StartInfo *info = new StartInfo(argc, argv, params);
+    SDL_Thread *guiThread = SDL_CreateThread(&StartGUI, info);
 
     TGResourceManager rec;
     TGResource vs = rec.CreateResource(TGResourceType::Shader, "cubeshader.vs");
@@ -36,6 +59,7 @@ int main(int argc, char *argv[])
                     running = false;
                     break;
                 case SDL_VIDEORESIZE:
+                    render.Resize(event.resize.w, event.resize.h);
                     ChangeSize(event.resize.w, event.resize.h);
                     break;
                 case SDL_MOUSEMOTION:
@@ -77,4 +101,8 @@ int main(int argc, char *argv[])
         
         render.Present();
     }
+
+    if(pthread_mutex_destroy(&SimParams::Lock) != 0)
+        Bug(true, "Failed to destroy mutex");
+    return 0;
 }

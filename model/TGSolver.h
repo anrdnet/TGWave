@@ -4,7 +4,7 @@
 
 #include "core/TGDef.h"
 #include "model/TGMeshSystem.h"
-
+#include "TGInterface.h"
 class TGSolver
 {
     public:
@@ -12,23 +12,21 @@ class TGSolver
     const real dy;
     const real dx2;
     const real dy2;
-    const real c2;
-    const real invdxdy;
+    const SimParams &myParams;
 
-    TGSolver(real dx, real dy, real c)
-        : dx(dx),dy(dy), dx2(dx*dx), dy2(dy*dy), c2(c*c), invdxdy(1./(dx*dy)) { }
+    TGSolver(real dx, real dy, const SimParams &params)
+        : dx(dx),dy(dy), dx2(dx*dx), dy2(dy*dy), myParams(params) { }
 
     virtual void Advance(TGMeshSystem &system, real dt) = 0;
 };
 
 class TGExplicitSolver : public TGSolver
 {
-    const real mufactor;
     public:
-    TGExplicitSolver(real dx, real dy, real c, real mu)
-        : TGSolver(dx,dy,c), mufactor(4*mu/3.) 
+    TGExplicitSolver(real dx, real dy, SimParams &params)
+        : TGSolver(dx,dy,params)
     {
-        Debug("At init: dx: %g, dy: %g", this->dx,this->dy);
+        //Debug("At init: dx: %g, dy: %g", this->dx,this->dy);
     }
 
     virtual void Advance(TGMeshSystem &system, real dt);

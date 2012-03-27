@@ -1,9 +1,10 @@
 
 CPPC:=g++
-CPPFLAGS:= -c -Wall -std=c++0x -I. -O3 -ffast-math 
+INCFLAGS:= -I. $(shell pkg-config --cflags gtkmm-3.0)
+CPPFLAGS:= -c -Wall -std=c++0x -O3 -ffast-math $(INCFLAGS)
 LD:=g++
-LDFLAGS:= -lGL -lSDL -lGLU -O3 -ffast-math
-MMFLAGS:= -I.
+LDFLAGS:= -lGL -lSDL -lGLU -O3 -ffast-math $(shell pkg-config --libs gtkmm-3.0)
+MMFLAGS:= $(INCFLAGS)
 BINDIR:=bin
 CPPSRCFILES:=$(shell find -mindepth 0 -maxdepth 3 -name "*.cpp")
 OBJFILES:=$(patsubst %.cpp, $(BINDIR)/%.o, $(CPPSRCFILES))
