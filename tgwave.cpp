@@ -38,8 +38,10 @@ int main(int argc, char *argv[])
     TGResource vs = rec.CreateResource(TGResourceType::Shader, "cubeshader.vs");
     TGResource fs = rec.CreateResource(TGResourceType::Shader, "cubeshader.fs");
     TGResource bfs = rec.CreateResource(TGResourceType::Shader, "black.fs");
+    TGResource envvs = rec.CreateResource(TGResourceType::Shader, "envshader.vs");
+    TGResource envfs = rec.CreateResource(TGResourceType::Shader, "envshader.fs");
     Debug("Got shaders");
-    Create(rec.GetData(vs).c_str(), rec.GetData(fs).c_str(), rec.GetData(bfs).c_str());
+    Create(rec.GetData(vs).c_str(), rec.GetData(fs).c_str(), rec.GetData(bfs).c_str(), rec.GetData(envvs).c_str(), rec.GetData(envfs).c_str());
 
     ChangeSize(render.GetSize().Width, render.GetSize().Height);
     bool running = true;

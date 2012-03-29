@@ -36,7 +36,10 @@ void TGShader::Create()
 
 void TGShader::SetTransform(const TGMatrix4 &matrix)
 {
+    TGMatrix4 norm(matrix);
+    norm.InvertTranspose();
     glUniformMatrix4fv(myTransformLoc, 1, GL_FALSE, matrix);
+    //glUniformMatrix4fv(myNormalTransformLoc, 1, GL_FALSE, norm);
     CheckError();
 }
 
@@ -47,6 +50,15 @@ void TGShader::SetUniformf(const char *name, float value)
     //Debug("Uniform %d is %s", loc, name);
     Bug(loc == -1, "Uniform not found");
     glUniform1f(loc, value);
+    CheckError();
+}
+void TGShader::SetUniformv4(const char *name, const TGVectorF4 &value)
+{
+    GLint loc = glGetUniformLocation(myProgram, name);
+    CheckError();
+    //Debug("Uniform %d is %s", loc, name);
+    Bug(loc == -1, "Uniform not found");
+    glUniform4f(loc, value.X, value.Y, value.Z, value.W);
     CheckError();
 }
 
@@ -120,6 +132,7 @@ void TGShader::Link()
         delete [] buffer;
     }
     myTransformLoc = glGetUniformLocation(myProgram, "Transform");
+    myNormalTransformLoc = glGetUniformLocation(myProgram, "NormalTransform");
     CheckError();
 }
 

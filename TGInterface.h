@@ -30,7 +30,7 @@ struct SimParams
 };
 
 SimParams &Initialize();
-void Create(const char *vs, const char *fs, const char *bl);
+void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs);
 
 void Draw();
 

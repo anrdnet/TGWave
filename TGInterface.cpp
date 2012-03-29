@@ -2,6 +2,7 @@
 #include "TGInterface.h"
 #include "visual/TGCamera.h"
 #include "visual/TGMesh.h"
+#include "visual/TGEnv.h"
 #include "core/TGResourceManager.h"
 #include "visual/TGShader.h"
 #include "model/TGMeshSystem.h"
@@ -23,10 +24,12 @@ TGExplicitSolver solver(dx, dy, Params);
 TGMeshSystem meshSystem(h,w, 3);
 TGClick Clicker(meshSystem, dx, dy, Params);
 TGMesh mesh(h,w, dx, dy);
+TGEnv envmesh;
 TGCamera camera;
-TGMatrix4 meshTransform;
+//TGMatrix4 meshTransform;
 TGShader shader;
 TGShader black;
+TGShader env;
 real LastTime = 0;
 real LastFPS = 0;
 uint wWidth;
@@ -44,10 +47,10 @@ SimParams &Initialize()
     camera.LookAt(TGVectorF4(tw/2,0,th/2));
     camera.SetPosition(myMovement);
 
-    meshTransform(1,1) = 0;
+    /*meshTransform(1,1) = 0;
     meshTransform(2,1) = 1;
     meshTransform(2,2) = 0;
-    meshTransform(1,2) = 1;
+    meshTransform(1,2) = 1;*/
 
     real *state = new real[h*w];
     for(uint i = 0; i < h; i++)
@@ -66,19 +69,24 @@ SimParams &Initialize()
     return newParams;
 }
 
-void Create(const char *vs, const char *fs, const char *bl)
+void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs)
 {
     Debug("Create resources");
     shader.Create();
     black.Create();
+    env.Create();
     mesh.Create();
+    envmesh.Create(tw, th, 0.3, 0.1, 1);
     black.SetShader(TGVertexShader, vs);
     shader.SetShader(TGVertexShader, vs);
     shader.SetShader(TGFragmentShader, fs);
     black.SetShader(TGFragmentShader, bl);
+    env.SetShader(TGVertexShader, envvs);
+    env.SetShader(TGFragmentShader, envfs);
 
     shader.Link();
     black.Link();
+    env.Link();
     Debug("Got shaders");
 
     //glClearColor(100.0/256,149.0/256,237.0/256,1);
@@ -138,8 +146,9 @@ void Draw()
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     shader.Use();
     shader.SetUniformf("ColorScale", Params.Color);
-    meshTransform(1,3) = 0;
-    shader.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);
+    shader.SetUniformv4("CameraPosition", camera.GetPosition());
+    //meshTransform(1,3) = 0;
+    shader.SetTransform(camera.GetProjection()*camera.GetView()/*meshTransform*/);
 
     real adjdiff = meshSystem.Drift() - CurrentAdjustment;
     real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);
@@ -147,8 +156,12 @@ void Draw()
     //Debug("Avg: %g\nDiff: %g", meshSystem.Drift(), adjdiff);
 
     shader.SetUniformf("ZAdjustment", -CurrentAdjustment);
+    TGVectorF4 *norms = meshSystem.Normals();
     real *data = meshSystem.Commit();
-    mesh.Draw(shader, data, false);
+    mesh.Draw(shader, data, norms, false);
+    env.Use();
+    env.SetTransform(camera.GetProjection()*camera.GetView());
+    envmesh.Draw(env);
     //black.Use();
     //meshTransform(1,3) = 0.01;
     //black.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);

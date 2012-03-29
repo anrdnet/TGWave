@@ -14,7 +14,7 @@ void TGMesh::Create()
     this->TGMesh::~TGMesh();
     Bug(sizeof(TGVectorF4) != 16, "TGVectorF4-size is not 16");
 
-    glGenBuffers(3, myBuffers);
+    glGenBuffers(4, myBuffers);
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
     CheckError();
     TGVectorF4 *vdata = new TGVectorF4[myHeight*myWidth];
@@ -72,15 +72,20 @@ TGMesh::~TGMesh()
         glDeleteBuffers(3, myBuffers);
 }
 
-void TGMesh::Draw(TGShader &shader, real *data, bool lines)
+void TGMesh::Draw(TGShader &shader, real *data, TGVectorF4 *norms, bool lines)
 {
     CheckError();
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[Z]);
     CheckError();
     glBufferData(GL_ARRAY_BUFFER, myHeight*myWidth*sizeof(GLfloat), data, GL_STREAM_DRAW);
     CheckError();
+    glBindBuffer(GL_ARRAY_BUFFER, myBuffers[Norm]);
+    CheckError();
+    glBufferData(GL_ARRAY_BUFFER, myHeight*myWidth*sizeof(TGVectorF4), norms, GL_STREAM_DRAW);
+    CheckError();
     shader.SetAttribute("Z", myBuffers[Z], 1, GL_FLOAT, 0, 0, 0);
     shader.SetAttribute("Grid", myBuffers[VBO], 2, GL_FLOAT, 16, 0, 0);
+    shader.SetAttribute("Norm", myBuffers[Norm], 4, GL_FLOAT, 0, 0, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[ELEMENT]);
     CheckError();
 

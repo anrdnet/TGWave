@@ -66,6 +66,7 @@ class TGMatrix4
     void CreateTranslation(const TGVectorF4 &pos);
     real Determinant();
     bool Invert();
+    bool InvertTranspose();
 
     TGMatrix4 operator * (const TGMatrix4 &b) const;
     TGVectorF4 operator * (const TGVectorF4 &b) const;

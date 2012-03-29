@@ -22,7 +22,7 @@ inline void _CheckError(const char *file, uint line)
     //Debug("Checking for error "<<err);
     if(err != GL_NO_ERROR) 
     {
-        //Debug("Some error at: %s:%d %d",file,line,err);
+        Debug("Some error at: %s:%d %d",file,line,err);
         throw TGError(string(reinterpret_cast<const char*>(gluErrorString(err)))).Prepend(TGErrorCode::GL);
     }
 }

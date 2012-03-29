@@ -26,6 +26,7 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
             phi(k+1, i, j) = ((phic1 + phic3 - 2*phik + mufactor*((phic1 + phic3 - phi(k-1,i+1,j) - phi(k-1,i-1,j))*invdt - 2*phidt))*dx2 +
                              (phic2 + phic4 - 2*phik + mufactor*((phic2 + phic4 - phi(k-1,i,j+1) - phi(k-1, i, j-1))*invdt - 2*phidt))*dy2)
                              * dt*dt*c2*invdxdy + 2*phik - phi(k-1, i, j);
+            phi.Normal(k+1,i,j) = TGVectorF4( -(phic2 - phic4)*0.5*invdt,-(phic1 - phic3)*0.5*invdt, 1, 0);
         }
     }
     // i = 0, j = 0;
@@ -37,6 +38,7 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
         phi(k+1,0,0) = ((phic1 - phik + mufactor*((phic1 - phi(k-1,0+1,0))*invdt - phidt))*dx2 +
                         (phic2 - phik + mufactor*((phic2 - phi(k-1,0,0+1))*invdt - phidt))*dy2)
                         * dt*dt*c2*invdxdy + 2*phik-phi(k-1,0,0);
+        phi.Normal(k+1,0,0) = TGVectorF4( -(phic2 - phik)*invdt,-(phic1 - phik)*invdt, 1, 0);
     }
     // i = 0, j = ...
     for(uint j = 1; j < w-1; j++)
@@ -49,6 +51,7 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
         phi(k+1,0,j) = ((phic1 - phik + mufactor*((phic1 - phi(k-1,0+1,j))*invdt - phidt))*dx2 +
                        (phic2 + phic4 - 2*phik + mufactor*((phic2 + phic4 - phi(k-1,0,j+1) - phi(k-1,0,j-1))*invdt - 2*phidt))*dy2)
                        * dt*dt*c2*invdxdy + 2*phik-phi(k-1,0,j);
+        phi.Normal(k+1,0,j) = TGVectorF4( -(phic2 - phic4)*0.5*invdt,-(phic1 - phik)*invdt, 1, 0);
     }
 
     // i = 0, j = w-1
@@ -60,6 +63,7 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
         phi(k+1,0,w-1) = ((phic1- phik + mufactor*((phic1 - phi(k-1,0+1,w-1))*invdt - phidt))*dx2 +
                        (phic4 - phik + mufactor*((phic4 - phi(k-1,0,w-1-1))*invdt - phidt))*dy2)
                        * dt*dt*c2*invdxdy + 2*phik-phi(k-1,0,w-1);
+        phi.Normal(k+1,0,w-1) = TGVectorF4( -(phik - phic4)*invdt,-(phic1 - phik)*invdt, 1, 0);
     }
 
     //i = h-1; j = 0
@@ -71,6 +75,7 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
         phi(k+1,h-1,0) = ((phic3 - phik + mufactor*((phic3 - phi(k-1,h-1-1,0))*invdt - phidt))*dx2 +
                        (phic2 - phik + mufactor*((phic2 - phi(k-1,h-1,0+1))*invdt - phidt))*dy2)
                        * dt*dt*c2*invdxdy + 2*phik-phi(k-1,h-1,0);
+        phi.Normal(k+1,h-1,0) = TGVectorF4( -(phic2 - phik)*invdt,-(phik - phic3)*invdt, 1, 0);
     }
 
     //i = h-1; j = ...
@@ -84,6 +89,7 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
         phi(k+1,h-1,j) = ((phic3 - phik + mufactor*((phic3 - phi(k-1,h-1-1,j))*invdt - phidt))*dx2 +
                        (phic2 + phic4 - 2*phik + mufactor*((phic2 + phic4 - phi(k-1,h-1,j+1) - phi(k-1,h-1,j-1))*invdt - 2*phidt))*dy2)
                        * dt*dt*c2*invdxdy + 2*phik-phi(k-1,h-1,j);
+        phi.Normal(k+1,h-1,j) = TGVectorF4( -(phic2 - phic4)*0.5*invdt,-(phik - phic3)*invdt, 1, 0);
     }
 
     //i = h-1; j = w-1
@@ -95,6 +101,7 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
         phi(k+1,h-1,w-1) = ((phic3 - phik + mufactor*((phic3 - phi(k-1,h-1-1,w-1))*invdt - phidt))*dx2 +
                        (phic4 - phik + mufactor*((phic4 - phi(k-1,h-1,w-1-1))*invdt - phidt))*dy2)
                        * dt*dt*c2*invdxdy + 2*phik-phi(k-1,h-1,w-1);
+        phi.Normal(k+1,h-1,w-1) = TGVectorF4( -(phik - phic4)*invdt,-(phik - phic3)*invdt, 1, 0);
     }
 
     //i = ...; j = 0
@@ -108,6 +115,7 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
         phi(k+1,i,0) = ((phic1 + phic3 - 2*phik + mufactor*((phic1 + phic3 - phi(k-1,i+1,0) - phi(k-1,i-1,0))*invdt - 2*phidt))*dx2 +
                        (phic2 - phik + mufactor*((phic2 - phi(k-1,i,0+1))*invdt - phidt))*dy2)
                        * dt*dt*c2*invdxdy + 2*phik-phi(k-1,i,0);
+        phi.Normal(k+1,i,0) = TGVectorF4( -(phic2 - phik)*invdt,-(phic1 - phic3)*0.5*invdt, 1, 0);
     }
 
     //i = ...; j = w-1
@@ -121,5 +129,6 @@ void TGExplicitSolver::Advance(TGMeshSystem &phi, real dt)
         phi(k+1,i,w-1) = ((phic1 + phic3 - 2*phik + mufactor*((phic1 + phic3 - phi(k-1,i+1,w-1) - phi(k-1, i-1,w-1))*invdt - 2*phidt))*dx2 +
                        (phic4 - phik + mufactor*((phic4 - phi(k-1,i,w-1-1))*invdt - phidt))*dy2)
                        * dt*dt*c2*invdxdy + 2*phik-phi(k-1,i,w-1);
+        phi.Normal(k+1,i,w-1) = TGVectorF4( -(phik - phic4)*invdt,-(phic1 - phic3)*0.5*invdt, 1, 0);
     }
 }

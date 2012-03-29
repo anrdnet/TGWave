@@ -13,9 +13,10 @@ class TGMesh
     {
         VBO=0,
         ELEMENT=1,
-        Z=2
+        Z=2,
+        Norm=3
     };
-    GLuint myBuffers[3];
+    GLuint myBuffers[4];
     GLuint *myDynBuffers;
 
     uint myHeight;
@@ -44,7 +45,7 @@ class TGMesh
     ~TGMesh();
 
     void Create();
-    void Draw(TGShader &shader, real *data, bool lines);
+    void Draw(TGShader &shader, real *data, TGVectorF4 *normals, bool lines);
 };
 
 #endif

@@ -17,6 +17,7 @@ enum TGShaderType
 class TGShader
 {
     GLuint myTransformLoc;
+    GLuint myNormalTransformLoc;
     uint myProgram;
     uint myShaders[2];
 
@@ -28,6 +29,7 @@ class TGShader
 
     void SetTransform(const TGMatrix4 &matrix);
     void SetUniformf(const char *name, float value);
+    void SetUniformv4(const char *name, const TGVectorF4 &value);
 
     void SetShader(TGShaderType, const char *shaderCode);
     void Link();

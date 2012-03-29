@@ -13,6 +13,7 @@ class TGMeshSystem
     real myDrift;
     uint myCurrent;
     real *myData;
+    TGVectorF4 *myNormals;
 
     uint twrap(int t)
     {
@@ -33,9 +34,12 @@ class TGMeshSystem
 
     public:
     TGMeshSystem(uint height, uint width, uint count)
-        : myHeight(height), myWidth(width), myCount(count), myCurrent(0), myData(new real[height*width*count])
+        : myHeight(height), myWidth(width), myCount(count), myCurrent(0), 
+        myData(new real[height*width*count]), 
+        myNormals(new TGVectorF4[height*width*count])
     {
         memset(myData, 0, sizeof(GLfloat)*height*width*count);
+        memset(myNormals, 0, sizeof(TGVectorF4)*height*width*count);
     }
 
     ~TGMeshSystem()
@@ -47,6 +51,11 @@ class TGMeshSystem
     real &operator () (int k, int i, int j)
     {
         return myData[index(myCurrent+k-1,i,j)];
+    }
+
+    TGVectorF4 &Normal(int k, int i, int j)
+    {
+        return myNormals[index(myCurrent+k-1,i,j)];
     }
 
     real &Drift()
@@ -61,6 +70,11 @@ class TGMeshSystem
     uint GetWidth()
     {
         return myWidth;
+    }
+
+    TGVectorF4 *Normals()
+    {
+        return myNormals + index(myCurrent, 0,0);
     }
 
     real *Commit()
