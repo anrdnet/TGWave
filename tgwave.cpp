@@ -85,14 +85,16 @@ int main(int argc, char *argv[])
                 case SDL_MOUSEBUTTONUP:
                     //Debug("Got mouse up on button %d", event.button.button);
                     if(event.button.button == 1)
+                    {
+                        if(clickMovement < 10)
+                        {
+                            Touch(event.button.x, event.button.y);
+                        }
                         mouse1Down = false;
+                    }
                     else if(event.button.button == 3)
                         mouse2Down = false;
 
-                    if(clickMovement < 10)
-                    {
-                        Touch(event.button.x, event.button.y);
-                    }
                     break;
                 default:
                     break;

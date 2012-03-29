@@ -29,6 +29,8 @@ void TGRender::Initialize(int width, int height, bool fullscreen) throw(TGError)
     myCurrentSize.Height = myScreen->h;
     myCurrentSize.Width = myScreen->w;
 
+    //SDL_ShowCursor(SDL_DISABLE);
+
     Debug("Context successfully created");
 }
 
