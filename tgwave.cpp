@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
                     else if(event.button.button == 3)
                         mouse2Down = false;
 
-                    if(clickMovement < 20)
+                    if(clickMovement < 10)
                     {
                         Touch(event.button.x, event.button.y);
                     }
