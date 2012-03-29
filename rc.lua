@@ -291,13 +291,13 @@ client.add_signal("manage", function (c, startup)
     -- Add a titlebar
     -- awful.titlebar.add(c, { modkey = modkey })
 
-    -- Enable sloppy focus (no thanks!)
-    -- c:add_signal("mouse::enter", function(c)
-    --    if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-    --        and awful.client.focus.filter(c) then
-    --        client.focus = c
-    --    end
-    -- end)
+    -- Enable sloppy focus
+    c:add_signal("mouse::enter", function(c)
+       if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+           and awful.client.focus.filter(c) then
+           client.focus = c
+       end
+    end)
 
     if not startup then
         -- Set the windows at the slave,
@@ -313,6 +313,7 @@ client.add_signal("manage", function (c, startup)
 end)
 
 do
-    awful.util.spawn("~/tgwave-git/tgwave")
+    awful.setmwfact(0.85)
+    awful.util.spawn_with_shell("cd ~/tgwave-git && ./tgwave")
 end
 -- }}}
