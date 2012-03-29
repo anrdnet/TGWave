@@ -29,11 +29,11 @@ int main(int argc, char *argv[])
     if(pthread_mutex_init(&SimParams::Lock, NULL) != 0)
         Bug(true, "Failed to make mutex");
     SimParams &params = Initialize();
-    TGRender render(0,0);
 
     StartInfo *info = new StartInfo(argc, argv, params);
     SDL_Thread *guiThread = SDL_CreateThread(&StartGUI, info);
 
+    TGRender render(0,0);
     TGResourceManager rec;
     TGResource vs = rec.CreateResource(TGResourceType::Shader, "cubeshader.vs");
     TGResource fs = rec.CreateResource(TGResourceType::Shader, "cubeshader.fs");

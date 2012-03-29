@@ -24,6 +24,8 @@ void TGRender::Initialize(int width, int height, bool fullscreen) throw(TGError)
         throw TGError(SDL_GetError()).Prepend(TGErrorCode::SdlInitWindow);
     }
 
+    SDL_WM_SetCaption("tgwave", "tgwave");
+
     myCurrentSize.Height = myScreen->h;
     myCurrentSize.Width = myScreen->w;
 
