@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     
     bool mouse1Down = false;
     bool mouse2Down = false;
-    bool click = false;
+    int clickMovement = 0;
 
     while(running)
     {
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
                     ChangeSize(event.resize.w, event.resize.h);
                     break;
                 case SDL_MOUSEMOTION:
-                    click = false;
+                    clickMovement += event.motion.xrel + event.motion.yrel;
                     //Debug("Got mouse move with dx=%d, dy=%d", event.motion.xrel, event.motion.yrel);
                     if(mouse1Down)
                         Orbit(event.motion.xrel, event.motion.yrel);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
                     //Debug("Got mouse down on button %d", event.button.button);
                     if(event.button.button == 1)
                     {
-                        click = true;
+                        clickMovement = 0;
                         mouse1Down = true;
                     }
                     else if(event.button.button == 3)
@@ -89,10 +89,9 @@ int main(int argc, char *argv[])
                     else if(event.button.button == 3)
                         mouse2Down = false;
 
-                    if(click)
+                    if(clickMovement < 20)
                     {
                         Touch(event.button.x, event.button.y);
-                        click = false;
                     }
                     break;
                 default:
