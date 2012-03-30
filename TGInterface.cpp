@@ -164,7 +164,7 @@ void Draw()
     shader.SetUniformf("ZAdjustment", -CurrentAdjustment);
     TGVectorF4 *norms = meshSystem.Normals();
     real *data = meshSystem.Commit();
-    mesh.Draw(shader, data, norms, false);
+    //mesh.Draw(shader, data, norms, false);
     renderManager.End();
     //black.Use();
     //meshTransform(1,3) = 0.01;

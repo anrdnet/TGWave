@@ -10,12 +10,14 @@ class TGEnv
     enum BufferTypes
     {
         VBO,
+        TexCoord,
         Element
     };
-    GLuint myBuffers[2];
+    GLuint myBuffers[3];
 
     public:
     TGEnv();
+    ~TGEnv();
     void Create(real tw, real th, real border, real height, real depth);
 
     void Draw(TGShader &shader);

@@ -1,6 +1,7 @@
 
 #include "visual/TGRenderManager.h"
 #include "TilesTextureData.h"
+#include "GL/glu.h"
 
 TGRenderManager::TGRenderManager(TGShader &envShader, TGShader &waterShader)
     : myEnvShader(envShader), myWaterShader(waterShader)
@@ -30,14 +31,15 @@ void TGRenderManager::Create()
     CheckError();
     glBindTexture(GL_TEXTURE_2D, myTextures[Env]);
     CheckError();
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 2, 2, 0, GL_RGB, GL_UNSIGNED_BYTE, pixeldata);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, TilesTexture.width, TilesTexture.height, GL_RGB, GL_UNSIGNED_BYTE, TilesTexture.pixel_data);
     CheckError();
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 void TGRenderManager::BeginEnv()
 {
     myEnvShader.Use();
-    //glBindFramebuffer(GL_FRAMEBUFFER, myFrameBuffer);   
+    //glBindFramebuffer(GL_FRAMEBUFFER, myFrameBuffer);
     myEnvShader.SetTexture("Tiles", myTextures[Env], 1);
     CheckError();
 }

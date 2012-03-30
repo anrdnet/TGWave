@@ -2,10 +2,11 @@
 uniform mat4 Transform;
 
 attribute vec4 Vertex;
-varying vec2 TexCoord;
+attribute vec2 TexCoord;
+varying vec2 vTexCoord;
 
 void main(void)
 {
-    TexCoord = vec2(Vertex.x, Vertex.z);
+    vTexCoord = TexCoord;
     gl_Position = Transform * Vertex;
 }

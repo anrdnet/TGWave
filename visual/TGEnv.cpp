@@ -8,11 +8,17 @@ TGEnv::TGEnv()
 
 }
 
+TGEnv::~TGEnv()
+{
+    if(glIsBuffer(myBuffers[0]))
+        glDeleteBuffers(3, myBuffers);
+}
+
 void TGEnv::Create(real tw, real th, real border, real height, real depth)
 {
-    glGenBuffers(2, myBuffers);
+    glGenBuffers(3, myBuffers);
     CheckError();
-    TGVectorF4 vdata[20];
+    TGVectorF4 vdata[36];
     static const uint w = 4;
     vdata[w*0+0] = TGVectorF4(-border, height, -border);
     vdata[w*0+1] = TGVectorF4(0, height, -border);
@@ -30,19 +36,113 @@ void TGEnv::Create(real tw, real th, real border, real height, real depth)
     vdata[w*3+1] = TGVectorF4(0, height, th+border);
     vdata[w*3+2] = TGVectorF4(tw, height, th+border);
     vdata[w*3+3] = TGVectorF4(tw+border, height, th+border);
-    vdata[16] = TGVectorF4(0, height-depth, 0);
-    vdata[17] = TGVectorF4(tw, height-depth, 0);
-    vdata[18] = TGVectorF4(0, height-depth, th);
-    vdata[19] = TGVectorF4(tw, height-depth, th);
-    vdata[20] = TGVectorF4(-border, height-depth - 0.1, -border);
-    vdata[21] = TGVectorF4(tw+border, height - depth - 0.1, -border);
-    vdata[22] = TGVectorF4(-border, height -depth - 0.1 , th+border);
-    vdata[23] = TGVectorF4(tw+border, height - depth - 0.1, th+border);
+    vdata[16] = TGVectorF4(0, height, 0);
+    vdata[17] = TGVectorF4(tw, height, 0);
+    vdata[18] = TGVectorF4(0, height, th);
+    vdata[19] = TGVectorF4(tw, height, th);
+    vdata[20] = TGVectorF4(0, height-depth, 0);
+    vdata[21] = TGVectorF4(tw, height-depth, 0);
+    vdata[22] = TGVectorF4(0, height-depth, th);
+    vdata[23] = TGVectorF4(tw, height-depth, th);
+
+    vdata[24] = TGVectorF4(-border, height, -border);
+    vdata[25] = TGVectorF4(tw+border, height, -border);
+    vdata[26] = TGVectorF4(-border, height, th+border);
+    vdata[27] = TGVectorF4(tw+border, height, th+border);
+    vdata[28] = TGVectorF4(-border, height - depth - 0.1, -border);
+    vdata[29] = TGVectorF4(tw+border, height - depth - 0.1, -border);
+    vdata[30] = TGVectorF4(-border, height -depth - 0.1 , th+border);
+    vdata[31] = TGVectorF4(tw+border, height - depth - 0.1, th+border);
+
+    vdata[32] = TGVectorF4(0, height, 0);
+    vdata[33] = TGVectorF4(tw, height, 0);
+    vdata[34] = TGVectorF4(0, height, th);
+    vdata[35] = TGVectorF4(tw, height, th);
 
     glBindBuffer(GL_ARRAY_BUFFER, myBuffers[VBO]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(TGVectorF4)*24, vdata, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(TGVectorF4)*36, vdata, GL_STATIC_DRAW);
 
-    ushort edata[96] = {
+    real TexScale = 1.5;
+    real tdata[72];
+    tdata[(w*0+0)*2] =( -border)*TexScale;
+    tdata[(w*0+0)*2+1] =(-border)*TexScale;
+    tdata[(w*0+1)*2] =( -border)*TexScale;
+    tdata[(w*0+1)*2+1] =0;
+    tdata[(w*0+2)*2] =( -border)*TexScale;
+    tdata[(w*0+2)*2+1] =(tw)*TexScale;
+    tdata[(w*0+3)*2] =( -border)*TexScale;
+    tdata[(w*0+3)*2+1] =(tw+border)*TexScale;
+    tdata[(w*1+0)*2] = 0;
+    tdata[(w*1+0)*2+1] =(-border)*TexScale;
+    tdata[(w*1+1)*2] = 0;
+    tdata[(w*1+1)*2+1] =0;
+    tdata[(w*1+2)*2] = 0;
+    tdata[(w*1+2)*2+1] =(tw)*TexScale;
+    tdata[(w*1+3)*2] = 0;
+    tdata[(w*1+3)*2+1] =(tw+border)*TexScale;
+    tdata[(w*2+0)*2] =( th)*TexScale;
+    tdata[(w*2+0)*2+1] =(-border)*TexScale;
+    tdata[(w*2+1)*2] =( th)*TexScale;
+    tdata[(w*2+1)*2+1] =0;
+    tdata[(w*2+2)*2] =( th)*TexScale;
+    tdata[(w*2+2)*2+1] =(tw)*TexScale;
+    tdata[(w*2+3)*2] =( th)*TexScale;
+    tdata[(w*2+3)*2+1] =(tw+border)*TexScale;
+    tdata[(w*3+0)*2] =( th+border)*TexScale;
+    tdata[(w*3+0)*2+1] =(-border)*TexScale;
+    tdata[(w*3+1)*2] =( th+border)*TexScale;
+    tdata[(w*3+1)*2+1] =0;
+    tdata[(w*3+2)*2] =( th+border)*TexScale;
+    tdata[(w*3+2)*2+1] =(tw)*TexScale;
+    tdata[(w*3+3)*2] =( th+border)*TexScale;
+    tdata[(w*3+3)*2+1] =(tw+border)*TexScale;
+
+    tdata[(16)*2] = 0;
+    tdata[(16)*2+1] =( -depth)*TexScale;
+    tdata[(17)*2] = 0;
+    tdata[(17)*2+1] =( depth + tw)*TexScale;
+    tdata[(18)*2] =( th)*TexScale;
+    tdata[(18)*2+1] =( -depth)*TexScale;
+    tdata[(19)*2] =( th)*TexScale;
+    tdata[(19)*2+1] =( depth + tw)*TexScale;
+    tdata[(20)*2] = 0;
+    tdata[(20)*2+1] =0;
+    tdata[(21)*2] = 0;
+    tdata[(21)*2+1] =(tw)*TexScale;
+    tdata[(22)*2] =( th)*TexScale;
+    tdata[(22)*2+1] =0;
+    tdata[(23)*2] =( th)*TexScale;
+    tdata[(23)*2+1] =(tw)*TexScale;
+
+    tdata[(24)*2] = 0;
+    tdata[(24)*2+1] = 0;
+    tdata[(25)*2] = 0;
+    tdata[(25)*2+1] = 0;
+    tdata[(26)*2] = 0;
+    tdata[(26)*2+1] = 0;
+    tdata[(27)*2] = 0;
+    tdata[(27)*2+1] = 0;
+    tdata[(28)*2] = 0;
+    tdata[(28)*2+1] = 0;
+    tdata[(29)*2] = 0;
+    tdata[(29)*2+1] = 0;
+    tdata[(30)*2] = 0;
+    tdata[(30)*2+1] = 0;
+    tdata[(31)*2] = 0;
+    tdata[(31)*2+1] = 0;
+    tdata[(32)*2] =( -depth)*TexScale;
+    tdata[(32)*2+1] = 0;
+    tdata[(33)*2] =( -depth)*TexScale;
+    tdata[(33)*2+1] =( tw)*TexScale;
+    tdata[(34)*2] =( th+depth)*TexScale;
+    tdata[(34)*2+1] = 0;
+    tdata[(35)*2] =( th+depth)*TexScale;
+    tdata[(35)*2+1] =( tw)*TexScale;
+
+    glBindBuffer(GL_ARRAY_BUFFER, myBuffers[TexCoord]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(real)*2*36, tdata, GL_STATIC_DRAW);
+
+    ushort edata[102] = {
          0, 4, 5,
          0, 5, 1,
          1, 5, 6,
@@ -59,33 +159,36 @@ void TGEnv::Create(real tw, real th, real border, real height, real depth)
          8,13, 9,
          4, 8, 9,
          4, 9, 5,
-         9,16, 5,
-         9,18,16,
-         5,16,17,
-         5,17, 6,
-         6,17,19,
-         6,19,10,
-        10,19,18,
-        10,18,9,
-         0,21,20,
-         0, 3,21,
-         3,23,21,
-         3,15,23,
-        15,22,23,
-        15,12,22,
-        12,20,22,
-        12, 0,20
+        18,20,16,
+        18,22,20,
+        32,20,21,
+        32,21,33,
+        17,21,23,
+        17,23,19,
+        35,23,22,
+        35,22,34,
+        20,22,23,
+        20,23,21,
+        24,29,28,
+        24,25,29,
+        25,31,29,
+        25,27,31,
+        27,30,31,
+        27,26,30,
+        26,28,30,
+        26,24,28
     };
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[Element]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort)*96, edata, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort)*102, edata, GL_STATIC_DRAW);
 }
 
 void TGEnv::Draw(TGShader &shader)
 {
     shader.SetAttribute("Vertex", myBuffers[VBO], 4, GL_FLOAT, 0, 0);
+    shader.SetAttribute("TexCoord", myBuffers[TexCoord], 2, GL_FLOAT, 0, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[Element]);
     CheckError();
 
-    glDrawElements(GL_TRIANGLES, 96, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, 102, GL_UNSIGNED_SHORT, 0);
 }
