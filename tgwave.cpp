@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
                     ChangeSize(event.resize.w, event.resize.h);
                     break;
                 case SDL_MOUSEMOTION:
-                    clickMovement += event.motion.xrel + event.motion.yrel;
+                    clickMovement += abs(event.motion.xrel) + abs(event.motion.yrel);
                     //Debug("Got mouse move with dx=%d, dy=%d", event.motion.xrel, event.motion.yrel);
                     if(mouse1Down)
                         Orbit(event.motion.xrel, event.motion.yrel);
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
                         Zoom((event.motion.yrel)*0.01 + 1);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
-                    //Debug("Got mouse down on button %d", event.button.button);
+                    Debug("Got mouse down on button %d", event.button.button);
                     if(event.button.button == 1)
                     {
                         clickMovement = 0;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
                     //Debug("Got mouse up on button %d", event.button.button);
                     if(event.button.button == 1)
                     {
-                        if(clickMovement < 10)
+                        if(clickMovement < 5)
                         {
                             Touch(event.button.x, event.button.y);
                         }

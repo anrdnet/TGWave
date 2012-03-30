@@ -62,6 +62,18 @@ void TGShader::SetUniformv4(const char *name, const TGVectorF4 &value)
     CheckError();
 }
 
+void TGShader::SetTexture(const char *sampler, GLuint texture, int textureSlot)
+{
+    glActiveTexture(GL_TEXTURE0 + textureSlot);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    CheckError();
+    GLint loc = glGetUniformLocation(myProgram, sampler);
+    CheckError();
+    Bug(loc == -1, "Uniform not found");
+    glUniform1i(loc, textureSlot);
+    CheckError();
+}
+
 void TGShader::SetShader(TGShaderType type, const char *shaderCode)
 {
     if(myShaders[type] != 0)

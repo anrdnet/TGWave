@@ -8,6 +8,7 @@
 #include "model/TGMeshSystem.h"
 #include "model/TGSolver.h"
 #include "model/TGClick.h"
+#include "visual/TGRenderManager.h"
 #include <cmath>
 #include <GL/gl.h>
 #include <SDL/SDL.h>
@@ -30,6 +31,7 @@ TGCamera camera;
 TGShader shader;
 TGShader black;
 TGShader env;
+TGRenderManager renderManager(env, shader);
 real LastTime = 0;
 real LastFPS = 0;
 uint wWidth;
@@ -76,6 +78,7 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     black.Create();
     env.Create();
     mesh.Create();
+    renderManager.Create();
     envmesh.Create(tw, th, 0.3, 0.1, 1);
     black.SetShader(TGVertexShader, vs);
     shader.SetShader(TGVertexShader, vs);
@@ -90,7 +93,7 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     Debug("Got shaders");
 
     //glClearColor(100.0/256,149.0/256,237.0/256,1);
-    glClearColor(0,0,0,1);
+    glClearColor(0.1,0.1,0.1,1);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -144,7 +147,10 @@ void Draw()
     solver.Advance(meshSystem, elapsed/2);
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    shader.Use();
+    renderManager.BeginEnv();
+    env.SetTransform(camera.GetProjection()*camera.GetView());
+    envmesh.Draw(env);
+    renderManager.BeginWater();
     shader.SetUniformf("ColorScale", Params.Color);
     shader.SetUniformv4("CameraPosition", camera.GetPosition());
     //meshTransform(1,3) = 0;
@@ -159,9 +165,7 @@ void Draw()
     TGVectorF4 *norms = meshSystem.Normals();
     real *data = meshSystem.Commit();
     mesh.Draw(shader, data, norms, false);
-    env.Use();
-    env.SetTransform(camera.GetProjection()*camera.GetView());
-    envmesh.Draw(env);
+    renderManager.End();
     //black.Use();
     //meshTransform(1,3) = 0.01;
     //black.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);
