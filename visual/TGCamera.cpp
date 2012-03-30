@@ -5,7 +5,8 @@
 
 void TGCamera::Create()
 {
-    TGVectorF4 Z =  myPosition - myLookAt; 
+    TGVectorF4 dir = myPosition - myLookAt; 
+    TGVectorF4 Z = dir;
     Z.Normalize();
     myView = TGMatrix4();
     TGVectorF4 X;
@@ -32,6 +33,8 @@ void TGCamera::Create()
         myView(1,3) = myLookAt.Z;
         myView(2,3) = -(myPosition * UnitYF);
         my2D = true;
+        myPosition.Z = myLookAt.Z + sqrtf(dir.X*dir.X+dir.Z * dir.Z);
+        myPosition.X = myLookAt.X;
     }
     myView(2,0) = Z.X;
     myView(2,1) = Z.Y;
