@@ -7,6 +7,7 @@
 #include <gtkmm/hvscale.h>
 #include <gtkmm/hvbox.h>
 #include <gtkmm/label.h>
+#include <gtkmm/checkbutton.h>
 #include "TGInterface.h"
 
 class TGSettingsGUI : public Gtk::Window
@@ -36,6 +37,7 @@ protected:
     Gtk::Label myScaleLabel;
     Gtk::HScale myColorScale;
     Gtk::Label myColorLabel;
+    Gtk::CheckButton myShading;
     SimParams &myParams;
 public:
     static void RunGUI(int argc, char** argv, SimParams &params);

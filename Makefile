@@ -1,7 +1,7 @@
 
 CPPC:=g++
 INCFLAGS:= -I. $(shell pkg-config --cflags gtkmm-3.0)
-CPPFLAGS:= -c -Wall -std=c++0x -O3 -ffast-math $(INCFLAGS)
+CPPFLAGS:= -c -Wall -std=c++0x -O3 -ffast-math $(INCFLAGS) -ggdb
 LD:=g++
 LDFLAGS:= -lGL -lSDL -lGLU -O3 -ffast-math $(shell pkg-config --libs gtkmm-3.0)
 MMFLAGS:= $(INCFLAGS)

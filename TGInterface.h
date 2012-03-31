@@ -17,7 +17,9 @@ struct SimParams
         NewHeight = 1;
         Shape = 100;
         Scale = 1;
-        Color = 1;
+        Color = 20;
+        Reset = false;
+        Shaded = false;
     }
     real DriftSpeed;
     real c;
@@ -31,7 +33,7 @@ struct SimParams
 };
 
 SimParams &Initialize();
-void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs);
+void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs, const char *colvs, const char *colfs);
 
 void Draw();
 

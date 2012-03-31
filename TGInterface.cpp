@@ -31,6 +31,7 @@ TGCamera camera;
 TGShader water;
 TGShader black;
 TGShader env;
+TGShader colors;
 TGRenderManager renderManager;
 real LastTime = 0;
 real LastFPS = 0;
@@ -71,12 +72,13 @@ SimParams &Initialize()
     return newParams;
 }
 
-void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs)
+void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs, const char *colvs, const char *colfs)
 {
     Debug("Create resources");
     water.Create();
     black.Create();
     env.Create();
+    colors.Create();
     mesh.Create();
     renderManager.Create();
     envmesh.Create(tw, th, 0.3, 0.3, 1);
@@ -86,10 +88,14 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     black.SetShader(TGFragmentShader, bl);
     env.SetShader(TGVertexShader, envvs);
     env.SetShader(TGFragmentShader, envfs);
+    colors.SetShader(TGVertexShader, colvs);
+    colors.SetShader(TGFragmentShader, colfs);
+
 
     water.Link();
     black.Link();
     env.Link();
+    colors.Link();
     Debug("Got shaders");
 
     //glClearColor(100.0/256,149.0/256,237.0/256,1);
@@ -148,44 +154,47 @@ void Draw()
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     GLuint backTex;
-    if(true)
+    env.Use();
+    env.SetTransform(camera.GetProjection()*camera.GetView());
+    if(Params.Shaded)
     {
         renderManager.BeginEnv();
-        env.Use();
-        env.SetTransform(camera.GetProjection()*camera.GetView());
         envmesh.Draw(env);
         backTex = renderManager.BeginWater();
     }
     envmesh.Draw(env);
-    water.Use();
-    water.SetUniformv4("CameraPosition", camera.GetPosition());
-    //meshTransform(1,3) = 0;
-    water.SetTransform(camera.GetProjection()*camera.GetView()/*meshTransform*/);
 
     real adjdiff = meshSystem.Drift() - CurrentAdjustment;
     real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);
     CurrentAdjustment += ((adjdiff < 0 ? -1 : 1) * fminf(fabsf(adjdiff), Params.DriftSpeed*elapsed*driftScale));
-    //Debug("Avg: %g\nDiff: %g", meshSystem.Drift(), adjdiff);
 
-    water.SetUniformf("ZAdjustment", -CurrentAdjustment);
-    water.SetUniformf("RefractionFactor", 1.000293/1.333);
-    water.SetTexture("Background", backTex, 2);
-    water.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
-    TGVectorF4 *norms = meshSystem.Normals();
-    real *data = meshSystem.Commit();
-    mesh.Draw(water, data, norms, false);
-    renderManager.End();
-    //black.Use();
-    //meshTransform(1,3) = 0.01;
-    //black.SetTransform(camera.GetProjection()*camera.GetView()*meshTransform);
-    //mesh.Draw(black, data, true);
+    if(Params.Shaded)
+    {
+        water.Use();
+        water.SetUniformv4("CameraPosition", camera.GetPosition());
+        water.SetTransform(camera.GetProjection()*camera.GetView());
 
-    //real a = 0;
-    //for (int i = 0; i < 1000000; i++)
-    //{
-    //    a = (a+1)*(a+1)/(a+2);
-    //}
-    //Debug("%g", a);
+        water.SetUniformf("ZAdjustment", -CurrentAdjustment);
+        water.SetUniformf("RefractionFactor", 1.000293/1.333);
+        water.SetTexture("Background", backTex, 2);
+        water.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
+        TGVectorF4 *norms = meshSystem.Normals();
+        real *data = meshSystem.Commit();
+        mesh.Draw(water, data, norms, false);
+        renderManager.End();
+    }
+    else
+    {
+        colors.Use();
+        colors.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
+        colors.SetTransform(camera.GetProjection()*camera.GetView());
+        colors.SetUniformf("ColorScale", Params.Color);
+
+        colors.SetUniformf("ZAdjustment", -CurrentAdjustment);
+        TGVectorF4 *norms = meshSystem.Normals();
+        real *data = meshSystem.Commit();
+        mesh.Draw(water, data, norms, false);
+    }
 }
 
 void ChangeSize(int width, int height)

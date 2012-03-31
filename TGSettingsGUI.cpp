@@ -17,6 +17,7 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myScaleLabel("Størrelse på nye bølger"),
     myColorScale(0.1, 100, 0.1),
     myColorLabel("Farge"),
+    myShading("Shading"),
     myParams(params)
 {
     set_border_width(10);
@@ -41,6 +42,10 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
                 &TGSettingsGUI::on_value_changed));
     myColorScale.signal_value_changed().connect(sigc::mem_fun(*this,
                 &TGSettingsGUI::on_value_changed));
+    myScaleScale.signal_value_changed().connect(sigc::mem_fun(*this,
+                &TGSettingsGUI::on_value_changed));
+    myShading.signal_toggled().connect(sigc::mem_fun(*this,
+                &TGSettingsGUI::on_value_changed));
     
     myMainPanel.pack_end(myResetButton);
     myMainPanel.pack_end(myCScale);
@@ -55,6 +60,7 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myMainPanel.pack_end(myScaleLabel);
     myMainPanel.pack_end(myColorScale);
     myMainPanel.pack_end(myColorLabel);
+    myMainPanel.pack_end(myShading);
     
     add(myMainPanel);
     
@@ -83,6 +89,7 @@ void TGSettingsGUI::on_value_changed()
     myParams.Shape = myShapeScale.get_value();
     myParams.Scale = myScaleScale.get_value();
     myParams.Color = myColorScale.get_value();
+    myParams.Shaded = myShading.get_active();
     pthread_mutex_unlock(&SimParams::Lock);
 }
 
