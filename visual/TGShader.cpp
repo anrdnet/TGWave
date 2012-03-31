@@ -39,8 +39,12 @@ void TGShader::SetTransform(const TGMatrix4 &matrix)
     TGMatrix4 norm(matrix);
     norm.InvertTranspose();
     glUniformMatrix4fv(myTransformLoc, 1, GL_FALSE, matrix);
-    //glUniformMatrix4fv(myNormalTransformLoc, 1, GL_FALSE, norm);
     CheckError();
+    if(myNormalTransformLoc != -1)
+    {
+        glUniformMatrix4fv(myNormalTransformLoc, 1, GL_FALSE, norm);
+        CheckError();
+    }
 }
 
 void TGShader::SetUniformf(const char *name, float value)

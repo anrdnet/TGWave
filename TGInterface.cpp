@@ -31,7 +31,7 @@ TGCamera camera;
 TGShader shader;
 TGShader black;
 TGShader env;
-TGRenderManager renderManager(env, shader);
+TGRenderManager renderManager;
 real LastTime = 0;
 real LastFPS = 0;
 uint wWidth;
@@ -147,11 +147,18 @@ void Draw()
     solver.Advance(meshSystem, elapsed/2);
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    renderManager.BeginEnv();
-    env.SetTransform(camera.GetProjection()*camera.GetView());
+    GLuint backTex;
+    if(true)
+    {
+        renderManager.BeginEnv();
+        env.Use();
+        env.SetTransform(camera.GetProjection()*camera.GetView());
+        envmesh.Draw(env);
+        backTex = renderManager.BeginWater();
+    }
     envmesh.Draw(env);
-    renderManager.BeginWater();
-    shader.SetUniformf("ColorScale", Params.Color);
+    shader.Use();
+    //shader.SetUniformf("ColorScale", Params.Color);
     shader.SetUniformv4("CameraPosition", camera.GetPosition());
     //meshTransform(1,3) = 0;
     shader.SetTransform(camera.GetProjection()*camera.GetView()/*meshTransform*/);
@@ -162,9 +169,11 @@ void Draw()
     //Debug("Avg: %g\nDiff: %g", meshSystem.Drift(), adjdiff);
 
     shader.SetUniformf("ZAdjustment", -CurrentAdjustment);
+    shader.SetUniformf("RefractionFactor", 1.000293/1.333);
+    shader.SetTexture("Background", backTex, 2);
     TGVectorF4 *norms = meshSystem.Normals();
     real *data = meshSystem.Commit();
-    //mesh.Draw(shader, data, norms, false);
+    mesh.Draw(shader, data, norms, false);
     renderManager.End();
     //black.Use();
     //meshTransform(1,3) = 0.01;
@@ -187,6 +196,7 @@ void ChangeSize(int width, int height)
     Debug("Height: %d; Width: %d", height, width);
     glViewport(0,0,width,height);
     camera.MakeProjection(width, height);
+    renderManager.ChangeSize(width, height);
 }
 
 void Orbit(float dx, float dy)

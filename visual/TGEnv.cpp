@@ -2,6 +2,8 @@
 #include "visual/TGEnv.h"
 #include "core/TGDebug.h"
 #include "core/TGVector.h"
+#include "TilesTextureData.h"
+#include <GL/glu.h>
 
 TGEnv::TGEnv()
 {
@@ -12,6 +14,8 @@ TGEnv::~TGEnv()
 {
     if(glIsBuffer(myBuffers[0]))
         glDeleteBuffers(3, myBuffers);
+    if(glIsTexture(myTexture))
+        glDeleteTextures(1, &myTexture);
 }
 
 void TGEnv::Create(real tw, real th, real border, real height, real depth)
@@ -181,10 +185,19 @@ void TGEnv::Create(real tw, real th, real border, real height, real depth)
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[Element]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort)*102, edata, GL_STATIC_DRAW);
+
+    glGenTextures(1, &myTexture);
+    CheckError();
+    glBindTexture(GL_TEXTURE_2D, myTexture);
+    CheckError();
+    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, TilesTexture.width, TilesTexture.height, GL_RGB, GL_UNSIGNED_BYTE, TilesTexture.pixel_data);
+    CheckError();
 }
 
 void TGEnv::Draw(TGShader &shader)
 {
+    shader.SetTexture("Tiles", myTexture, 1);
+    CheckError();
     shader.SetAttribute("Vertex", myBuffers[VBO], 4, GL_FLOAT, 0, 0);
     shader.SetAttribute("TexCoord", myBuffers[TexCoord], 2, GL_FLOAT, 0, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[Element]);

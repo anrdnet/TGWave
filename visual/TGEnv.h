@@ -14,6 +14,7 @@ class TGEnv
         Element
     };
     GLuint myBuffers[3];
+    GLuint myTexture;
 
     public:
     TGEnv();

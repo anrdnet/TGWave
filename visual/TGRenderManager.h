@@ -3,7 +3,6 @@
 #define TGRENDERMANAGER_H_
 
 #include "core/TGDef.h"
-#include "visual/TGShader.h"
 
 class TGRenderManager
 {
@@ -12,19 +11,18 @@ class TGRenderManager
         Frame = 0,
         Env = 1
     };
-    GLuint myTextures[2];
+    GLuint myTexture;
     GLuint myFrameBuffer;
 
-    TGShader &myEnvShader;
-    TGShader &myWaterShader;
-
     public:
-    TGRenderManager(TGShader &envShader, TGShader &waterShader);
+    TGRenderManager();
     ~TGRenderManager();
     void Create();
+    
+    void ChangeSize(uint width, uint height);
 
     void BeginEnv();
-    void BeginWater();
+    GLuint BeginWater();
     void End();
 };
 

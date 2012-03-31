@@ -2,8 +2,8 @@
 (x) Space fix
 ( ) Shading
 (x)  > Texture
-( )  > Frame buffer
-( )  > Transperancy
-( )  > Refraction
+(x)  > Frame buffer
+(x)  > Transperancy
+(x)  > Refraction
 ( )  > LightSource
 ( )  > Reflection
