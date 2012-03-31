@@ -28,7 +28,7 @@ TGMesh mesh(h,w, dx, dy);
 TGEnv envmesh;
 TGCamera camera;
 //TGMatrix4 meshTransform;
-TGShader shader;
+TGShader water;
 TGShader black;
 TGShader env;
 TGRenderManager renderManager;
@@ -74,20 +74,20 @@ SimParams &Initialize()
 void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs)
 {
     Debug("Create resources");
-    shader.Create();
+    water.Create();
     black.Create();
     env.Create();
     mesh.Create();
     renderManager.Create();
-    envmesh.Create(tw, th, 0.3, 0.1, 1);
+    envmesh.Create(tw, th, 0.3, 0.3, 1);
     black.SetShader(TGVertexShader, vs);
-    shader.SetShader(TGVertexShader, vs);
-    shader.SetShader(TGFragmentShader, fs);
+    water.SetShader(TGVertexShader, vs);
+    water.SetShader(TGFragmentShader, fs);
     black.SetShader(TGFragmentShader, bl);
     env.SetShader(TGVertexShader, envvs);
     env.SetShader(TGFragmentShader, envfs);
 
-    shader.Link();
+    water.Link();
     black.Link();
     env.Link();
     Debug("Got shaders");
@@ -157,23 +157,23 @@ void Draw()
         backTex = renderManager.BeginWater();
     }
     envmesh.Draw(env);
-    shader.Use();
-    //shader.SetUniformf("ColorScale", Params.Color);
-    shader.SetUniformv4("CameraPosition", camera.GetPosition());
+    water.Use();
+    water.SetUniformv4("CameraPosition", camera.GetPosition());
     //meshTransform(1,3) = 0;
-    shader.SetTransform(camera.GetProjection()*camera.GetView()/*meshTransform*/);
+    water.SetTransform(camera.GetProjection()*camera.GetView()/*meshTransform*/);
 
     real adjdiff = meshSystem.Drift() - CurrentAdjustment;
     real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);
     CurrentAdjustment += ((adjdiff < 0 ? -1 : 1) * fminf(fabsf(adjdiff), Params.DriftSpeed*elapsed*driftScale));
     //Debug("Avg: %g\nDiff: %g", meshSystem.Drift(), adjdiff);
 
-    shader.SetUniformf("ZAdjustment", -CurrentAdjustment);
-    shader.SetUniformf("RefractionFactor", 1.000293/1.333);
-    shader.SetTexture("Background", backTex, 2);
+    water.SetUniformf("ZAdjustment", -CurrentAdjustment);
+    water.SetUniformf("RefractionFactor", 1.000293/1.333);
+    water.SetTexture("Background", backTex, 2);
+    water.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
     TGVectorF4 *norms = meshSystem.Normals();
     real *data = meshSystem.Commit();
-    mesh.Draw(shader, data, norms, false);
+    mesh.Draw(water, data, norms, false);
     renderManager.End();
     //black.Use();
     //meshTransform(1,3) = 0.01;

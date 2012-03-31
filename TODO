@@ -5,5 +5,5 @@
 (x)  > Frame buffer
 (x)  > Transperancy
 (x)  > Refraction
-( )  > LightSource
-( )  > Reflection
+(x)  > LightSource
+(x)  > Reflection

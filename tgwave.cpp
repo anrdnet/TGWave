@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
 
     TGRender render(0,0);
     TGResourceManager rec;
-    TGResource vs = rec.CreateResource(TGResourceType::Shader, "cubeshader.vs");
-    TGResource fs = rec.CreateResource(TGResourceType::Shader, "cubeshader.fs");
+    TGResource vs = rec.CreateResource(TGResourceType::Shader, "water.vs");
+    TGResource fs = rec.CreateResource(TGResourceType::Shader, "water.fs");
     TGResource bfs = rec.CreateResource(TGResourceType::Shader, "black.fs");
     TGResource envvs = rec.CreateResource(TGResourceType::Shader, "envshader.vs");
     TGResource envfs = rec.CreateResource(TGResourceType::Shader, "envshader.fs");

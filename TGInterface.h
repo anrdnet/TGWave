@@ -27,6 +27,7 @@ struct SimParams
     real Scale;
     real Color;
     bool Reset;
+    bool Shaded;
 };
 
 SimParams &Initialize();
