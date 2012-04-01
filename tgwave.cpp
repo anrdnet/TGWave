@@ -50,7 +50,6 @@ int main(int argc, char *argv[])
     bool running = true;
     
     bool mouse1Down = false;
-    bool mouse2Down = false;
     int clickMovement = 0;
 
     while(running)
@@ -72,8 +71,6 @@ int main(int argc, char *argv[])
                     //Debug("Got mouse move with dx=%d, dy=%d", event.motion.xrel, event.motion.yrel);
                     if(mouse1Down)
                         Orbit(event.motion.xrel, event.motion.yrel);
-                    else if (mouse2Down)
-                        Zoom((event.motion.yrel)*0.01 + 1);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     Debug("Got mouse down on button %d", event.button.button);
@@ -82,8 +79,6 @@ int main(int argc, char *argv[])
                         clickMovement = 0;
                         mouse1Down = true;
                     }
-                    else if(event.button.button == 3)
-                        mouse2Down = true;
                     break;
                 case SDL_MOUSEBUTTONUP:
                     //Debug("Got mouse up on button %d", event.button.button);
@@ -95,9 +90,6 @@ int main(int argc, char *argv[])
                         }
                         mouse1Down = false;
                     }
-                    else if(event.button.button == 3)
-                        mouse2Down = false;
-
                     break;
                 default:
                     break;

@@ -8,6 +8,7 @@
 #include <gtkmm/hvbox.h>
 #include <gtkmm/label.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/togglebutton.h>
 #include "TGInterface.h"
 
 class TGSettingsGUI : public Gtk::Window
@@ -38,6 +39,8 @@ protected:
     Gtk::HScale myColorScale;
     Gtk::Label myColorLabel;
     Gtk::CheckButton myShading;
+    Gtk::HBox myTogglePanel;
+    Gtk::ToggleButton myZoom;
     SimParams &myParams;
 public:
     static void RunGUI(int argc, char** argv, SimParams &params);

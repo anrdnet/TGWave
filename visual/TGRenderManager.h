@@ -21,7 +21,7 @@ class TGRenderManager
     
     void ChangeSize(uint width, uint height);
 
-    void BeginEnv();
+    void BeginEnv(GLenum face);
     GLuint BeginWater();
     void End();
 };

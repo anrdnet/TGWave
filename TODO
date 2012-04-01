@@ -6,7 +6,6 @@
 (x)  > Transperancy
 (x)  > Refraction
 (x)  > LightSource
-(x)  > Reflection
-( )  > Skymap
-( )  > Cubemap
 ( )  > Reflection
+(x)  > Skymap
+( )  > Cubemap

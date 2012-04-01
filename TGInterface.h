@@ -20,6 +20,7 @@ struct SimParams
         Color = 20;
         Reset = false;
         Shaded = false;
+        Zoom = false;
     }
     real DriftSpeed;
     real c;
@@ -30,6 +31,7 @@ struct SimParams
     real Color;
     bool Reset;
     bool Shaded;
+    bool Zoom;
 };
 
 SimParams &Initialize();

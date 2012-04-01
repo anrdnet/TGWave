@@ -1,5 +1,5 @@
 uniform mat4 Transform;
-uniform mat4 NormalTransform;
+//uniform mat4 NormalTransform;
 uniform float ZAdjustment;
 uniform vec4 CameraPosition;
 uniform float RefractionFactor;
@@ -12,7 +12,8 @@ attribute vec4 Norm;
 varying float Diffuse;
 varying float Specular;
 varying float Transperancy;
-varying vec2 TexCoord;
+varying vec3 TexCoordRefract;
+varying vec3 TexCoordReflect;
 
 void main(void)
 {
@@ -30,9 +31,8 @@ void main(void)
 
     vec4 tpos = Transform * pos;
 
-    vec4 refract = refract(camNorm, norm, RefractionFactor);
-    vec4 transformedRefract = NormalTransform * refract;
-    TexCoord = (tpos.xy + transformedRefract.xy) / (2.0*tpos.w)+vec2(0.5,0.5);
+    TexCoordRefract = refract(camNorm, norm, RefractionFactor).xyz;
+    TexCoordReflect = reflect(camNorm, norm).xyz;
 
     gl_Position = tpos;
 }

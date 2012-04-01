@@ -16,8 +16,8 @@ enum TGShaderType
 
 class TGShader
 {
-    GLuint myTransformLoc;
-    GLuint myNormalTransformLoc;
+    GLint myTransformLoc;
+    GLint myNormalTransformLoc;
     uint myProgram;
     uint myShaders[2];
 
@@ -30,7 +30,7 @@ class TGShader
     void SetTransform(const TGMatrix4 &matrix);
     void SetUniformf(const char *name, float value);
     void SetUniformv4(const char *name, const TGVectorF4 &value);
-    void SetTexture(const char *sampler, GLuint texture, int slot);
+    void SetTexture(const char *sampler, GLuint texture, int slot, GLenum textureType = GL_TEXTURE_2D);
 
     void SetShader(TGShaderType, const char *shaderCode);
     void Link();

@@ -3,6 +3,7 @@
 #include "visual/TGCamera.h"
 #include "visual/TGMesh.h"
 #include "visual/TGEnv.h"
+#include "visual/TGSkyMap.h"
 #include "core/TGResourceManager.h"
 #include "visual/TGShader.h"
 #include "model/TGMeshSystem.h"
@@ -19,6 +20,8 @@ real th = 2.0;
 real tw = 3.4;
 real dx = tw/float(w-1);
 real dy = th/float(h-1);
+real height = 0.3;
+real depth = 1;
 SimParams Params;
 SimParams newParams;
 TGExplicitSolver solver(dx, dy, Params);
@@ -26,6 +29,7 @@ TGMeshSystem meshSystem(h,w, 3);
 TGClick Clicker(meshSystem, dx, dy, Params);
 TGMesh mesh(h,w, dx, dy);
 TGEnv envmesh;
+TGSkyMap skybox(tw+0.6, TGVectorF4(tw/2,0,th/2));
 TGCamera camera;
 //TGMatrix4 meshTransform;
 TGShader water;
@@ -38,11 +42,72 @@ real LastFPS = 0;
 uint wWidth;
 uint wHeight;
 pthread_mutex_t SimParams::Lock;
+TGMatrix4 CubeViews[6];
+
+uint FaceToIndex(GLenum face)
+{
+    switch(face)
+    {
+        case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
+            return 0;
+        case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
+            return 1;
+        case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
+            return 2;
+        case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
+            return 3;
+        case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
+            return 4;
+        case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
+            return 5;
+    }
+    Bug(true, "Face out of range");
+}
+GLenum IndexToFace(uint index)
+{
+    switch(index)
+    {
+        case 0:
+            return GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+        case 1:
+            return GL_TEXTURE_CUBE_MAP_POSITIVE_Y;
+        case 2:
+            return GL_TEXTURE_CUBE_MAP_POSITIVE_Z;
+        case 3:
+            return GL_TEXTURE_CUBE_MAP_NEGATIVE_X;
+        case 4:
+            return GL_TEXTURE_CUBE_MAP_NEGATIVE_Y;
+        case 5:
+            return GL_TEXTURE_CUBE_MAP_NEGATIVE_Z;
+    }
+    Bug(true, "Face index out of bounds");
+}
 
 SimParams &Initialize()
 {
     Debug("Initialize native");
     Debug("h: %d, w: %d, th:%g, tw:%g", h, w, th, tw);
+
+    TGMatrix4 orthoh; orthoh.CreateOrthogonal(-th/2., th/2., height-depth, -(height-depth), 0.1, 20);
+    TGMatrix4 orthow; orthow.CreateOrthogonal(-tw/2., tw/2., height-depth, -(height-depth), 0.1, 20);
+    TGMatrix4 orthoz; orthoz.CreateOrthogonal(-tw/2., tw/2., -th/2., th/2., 0.1, 20);
+
+    TGVectorF4 pos(tw/2, 0, th/2);
+    camera.SetPosition(pos);
+
+    camera.LookAt(pos + TGVectorF4(1,0,0));
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_X)] = orthoh * camera.GetView();
+    camera.LookAt(pos + TGVectorF4(0,1,0));
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_Y)] = orthoz * camera.GetView();
+    camera.LookAt(pos + TGVectorF4(0,0,1));
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_Z)] = orthow * camera.GetView();
+    camera.LookAt(pos + TGVectorF4(-1,0,0));
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_X)] = orthoh * camera.GetView();
+    camera.LookAt(pos + TGVectorF4(0,-1,0));
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y)] = orthoz * camera.GetView();
+    camera.LookAt(pos + TGVectorF4(0,0,-1));
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z)] = orthow * camera.GetView();
+
     TGVectorF4 myMovement;
     myMovement.Z = -2;
     myMovement.Y = 3;
@@ -81,7 +146,8 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     colors.Create();
     mesh.Create();
     renderManager.Create();
-    envmesh.Create(tw, th, 0.3, 0.3, 1);
+    envmesh.Create(tw, th, 0.3, height, depth);
+    skybox.Create("data/textures/Skybox.bmp");
     black.SetShader(TGVertexShader, vs);
     water.SetShader(TGVertexShader, vs);
     water.SetShader(TGFragmentShader, fs);
@@ -155,13 +221,18 @@ void Draw()
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     GLuint backTex;
     env.Use();
-    env.SetTransform(camera.GetProjection()*camera.GetView());
     if(Params.Shaded)
     {
-        renderManager.BeginEnv();
-        envmesh.Draw(env);
-        backTex = renderManager.BeginWater();
+        for(uint i = 0; i < 6; i++)
+        {
+            env.SetTransform(CubeViews[i]);
+            renderManager.BeginEnv(IndexToFace(i));
+            envmesh.Draw(env);
+            skybox.Draw(env);
+            backTex = renderManager.BeginWater();
+        }
     }
+    env.SetTransform(camera.GetProjection()*camera.GetView());
     envmesh.Draw(env);
 
     real adjdiff = meshSystem.Drift() - CurrentAdjustment;
@@ -176,7 +247,7 @@ void Draw()
 
         water.SetUniformf("ZAdjustment", -CurrentAdjustment);
         water.SetUniformf("RefractionFactor", 1.000293/1.333);
-        water.SetTexture("Background", backTex, 2);
+        water.SetTexture("Background", backTex, 2, GL_TEXTURE_CUBE_MAP);
         water.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
         TGVectorF4 *norms = meshSystem.Normals();
         real *data = meshSystem.Commit();
@@ -205,12 +276,14 @@ void ChangeSize(int width, int height)
     Debug("Height: %d; Width: %d", height, width);
     glViewport(0,0,width,height);
     camera.MakeProjection(width, height);
-    renderManager.ChangeSize(width, height);
 }
 
 void Orbit(float dx, float dy)
 {
-    camera.Orbit(dx*0.005,dy*0.005);
+    if(Params.Zoom)
+        Zoom(dy*0.01 + 1);
+    else
+        camera.Orbit(dx*0.005,dy*0.005);
 }
 
 void Zoom(float factor)

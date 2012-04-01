@@ -18,6 +18,7 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myColorScale(0.1, 100, 0.1),
     myColorLabel("Farge"),
     myShading("Shading"),
+    myZoom("Zoom"),
     myParams(params)
 {
     set_border_width(10);
@@ -46,7 +47,12 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
                 &TGSettingsGUI::on_value_changed));
     myShading.signal_toggled().connect(sigc::mem_fun(*this,
                 &TGSettingsGUI::on_value_changed));
+    myZoom.signal_toggled().connect(sigc::mem_fun(*this,
+                &TGSettingsGUI::on_value_changed));
     
+    myTogglePanel.pack_end(myShading);
+    myTogglePanel.pack_end(myZoom);
+
     myMainPanel.pack_end(myResetButton);
     myMainPanel.pack_end(myCScale);
     myMainPanel.pack_end(myCLabel);
@@ -60,7 +66,7 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myMainPanel.pack_end(myScaleLabel);
     myMainPanel.pack_end(myColorScale);
     myMainPanel.pack_end(myColorLabel);
-    myMainPanel.pack_end(myShading);
+    myMainPanel.pack_end(myTogglePanel);
     
     add(myMainPanel);
     
@@ -90,6 +96,7 @@ void TGSettingsGUI::on_value_changed()
     myParams.Scale = myScaleScale.get_value();
     myParams.Color = myColorScale.get_value();
     myParams.Shaded = myShading.get_active();
+    myParams.Zoom = myZoom.get_active();
     pthread_mutex_unlock(&SimParams::Lock);
 }
 

@@ -19,6 +19,7 @@ class TGCamera
     TGVectorF4 &Move(TGVectorF4 &offset);
     TGVectorF4 &Orbit(real az, real el);
     TGVectorF4 &Zoom(real factor);
+
     TGMatrix4 &GetView()
     {
         return myView;
@@ -47,6 +48,7 @@ class TGCamera
     void LookAt(const TGVectorF4 &la)
     {
         myLookAt = la;
+        Create();
     }
 
     TGVectorF4 GetViewDirection()

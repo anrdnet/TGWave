@@ -5,6 +5,10 @@
 
 void TGCamera::Create()
 {
+    if(myPosition.Y < 0)
+    {
+        myPosition.Y = 0;
+    }
     TGVectorF4 dir = myPosition - myLookAt; 
     TGVectorF4 Z = dir;
     Z.Normalize();
