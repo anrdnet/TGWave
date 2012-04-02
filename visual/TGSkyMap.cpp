@@ -12,7 +12,7 @@ TGSkyMap::~TGSkyMap()
 {
     if(glIsBuffer(myBuffers[VBO]))
         glDeleteBuffers(2, myBuffers);
-    if(glIsTexture(myTexture))
+    if(glIsTexture(myTexture) && own)
         glDeleteTextures(1, &myTexture);
 }
 
@@ -21,12 +21,22 @@ char const * const filePostfix[6] = {
     "_l.bmp",
     "_u.bmp",
     "_d.bmp",
+    "_f.bmp",
     "_b.bmp",
-    "_f.bmp"
+};
+
+const GLenum Faces[6] = {
+    GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+    GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+    GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+    GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+    GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+    GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
 };
 
 void TGSkyMap::Create(const char *textureFile)
 {
+    own = true;
     glGenBuffers(2, myBuffers);
     glGenTextures(1, &myTexture);
 
@@ -96,7 +106,7 @@ void TGSkyMap::Create(const char *textureFile)
         }
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, myTexture);
-        gluBuild2DMipmaps(GL_TEXTURE_CUBE_MAP_NEGATIVE_X+i, GL_RGB, bitmap->w, bitmap->h, textureFormat, GL_UNSIGNED_BYTE, bitmap->pixels);
+        gluBuild2DMipmaps(Faces[i], GL_RGB, bitmap->w, bitmap->h, textureFormat, GL_UNSIGNED_BYTE, bitmap->pixels);
 
         SDL_FreeSurface(bitmap);
     }

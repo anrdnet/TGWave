@@ -10,6 +10,5 @@ varying vec4 vTexCoord;
 void main(void)
 {
     vTexCoord = normalize(Vertex);
-    vTexCoord.y *= -1.0;
-    gl_Position = Transform * (Vertex*Size+Center);
+    gl_Position = Transform * (vec4(Vertex.xyz,0.0)*Size+Center);
 }

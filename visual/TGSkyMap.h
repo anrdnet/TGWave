@@ -16,11 +16,23 @@ class TGSkyMap
 
     real mySize;
     TGVectorF4 myCenter;
+    bool own;
 
     public:
     TGSkyMap(real size, const TGVectorF4 &center);
     ~TGSkyMap();
     void Create(const char *skymapFile);
+    void SetTexture(GLuint texture)
+    {
+        if(glIsTexture(myTexture) && own)
+            glDeleteTextures(1, &myTexture);
+        own = false;
+        myTexture = texture;
+    }
+    GLuint GetTexture(GLuint texture)
+    {
+        return myTexture;
+    }
 
     void Draw(TGShader &shader, bool setTex = true);
 };

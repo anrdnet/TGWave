@@ -30,6 +30,7 @@ TGClick Clicker(meshSystem, dx, dy, Params);
 TGMesh mesh(h,w, dx, dy);
 TGEnv envmesh;
 TGSkyMap skybox(tw+0.6, TGVectorF4(tw/2,0,th/2));
+TGSkyMap cubebox(1, TGVectorF4());
 TGCamera camera;
 //TGMatrix4 meshTransform;
 TGShader water;
@@ -226,20 +227,23 @@ void Draw()
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     GLuint backTex;
     env.Use();
-    //if(Params.Shaded)
-    //{
-    //    for(uint i = 0; i < 6; i++)
-    //    {
-    //        env.SetTransform(CubeViews[i]);
-    //        renderManager.BeginEnv(IndexToFace(i));
-    //        envmesh.Draw(env);
-    //    }
-    //    backTex = renderManager.BeginWater();
-    //}
+    if(Params.Shaded)
+    {
+        for(uint i = 0; i < 6; i++)
+        {
+            env.SetTransform(CubeViews[i]);
+            renderManager.BeginEnv(IndexToFace(i));
+            envmesh.Draw(env);
+        }
+        backTex = renderManager.BeginWater();
+    }
+    cubebox.SetTexture(backTex);
     cube.Use();
     cube.SetTransform(camera.GetProjection()*camera.GetView());
+    cubebox.Draw(cube);
+    //env.Use();
+    //env.SetTransform(camera.GetProjection()*camera.GetView());
     //envmesh.Draw(env);
-    skybox.Draw(cube);
 
     //real adjdiff = meshSystem.Drift() - CurrentAdjustment;
     //real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);
