@@ -128,7 +128,6 @@ void TGShader::SetShader(TGShaderType type, const char *shaderCode)
 
     glAttachShader(myProgram, myShaders[type]);
     CheckError();
-
 }
 
 void TGShader::Link()
@@ -161,8 +160,13 @@ void TGShader::Use()
 void TGShader::SetAttribute(const char *name, GLuint vbo, uint elementCount,
         GLenum type, uint stride, uint offset, uint divisor)
 {
-    GLuint attribute = glGetAttribLocation(myProgram, name);
+    GLint attribute = glGetAttribLocation(myProgram, name);
     CheckError();
+    if(attribute == -1)
+    {
+        Debug("Attribute not found");
+        return;
+    }
     glEnableVertexAttribArray(attribute);
     CheckError();
     glBindBuffer(GL_ARRAY_BUFFER, vbo);

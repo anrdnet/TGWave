@@ -23,7 +23,7 @@ class TGSkyMap
     ~TGSkyMap();
     void Create(const char *skymapFile);
 
-    void Draw(TGShader &shader);
+    void Draw(TGShader &shader, bool setTex = true);
 };
 
 #endif

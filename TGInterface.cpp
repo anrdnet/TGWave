@@ -36,6 +36,7 @@ TGShader water;
 TGShader black;
 TGShader env;
 TGShader colors;
+TGShader cube;
 TGRenderManager renderManager;
 real LastTime = 0;
 real LastFPS = 0;
@@ -137,7 +138,7 @@ SimParams &Initialize()
     return newParams;
 }
 
-void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs, const char *colvs, const char *colfs)
+void Create(const char *vs, const char *fs, const char *bl, const char *envvs, const char *envfs, const char *colvs, const char *colfs, const char *cvs, const char *cfs)
 {
     Debug("Create resources");
     water.Create();
@@ -145,6 +146,7 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     env.Create();
     colors.Create();
     mesh.Create();
+    cube.Create();
     renderManager.Create();
     envmesh.Create(tw, th, 0.3, height, depth);
     skybox.Create("data/textures/Skybox.bmp");
@@ -156,12 +158,14 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     env.SetShader(TGFragmentShader, envfs);
     colors.SetShader(TGVertexShader, colvs);
     colors.SetShader(TGFragmentShader, colfs);
-
+    cube.SetShader(TGVertexShader, cvs);
+    cube.SetShader(TGFragmentShader, cfs);
 
     water.Link();
     black.Link();
     env.Link();
     colors.Link();
+    cube.Link();
     Debug("Got shaders");
 
     //glClearColor(100.0/256,149.0/256,237.0/256,1);
@@ -169,6 +173,7 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 
 inline real GetTime()
@@ -229,43 +234,46 @@ void Draw()
             renderManager.BeginEnv(IndexToFace(i));
             skybox.Draw(env);
             envmesh.Draw(env);
-            backTex = renderManager.BeginWater();
         }
+        backTex = renderManager.BeginWater();
     }
-    env.SetTransform(camera.GetProjection()*camera.GetView());
-    envmesh.Draw(env);
+    cube.Use();
+    cube.SetTransform(camera.GetProjection()*camera.GetView());
+    //envmesh.Draw(env);
+    cube.SetTexture("Tiles", backTex, 3, GL_TEXTURE_CUBE_MAP);
+    skybox.Draw(cube, false);
 
-    real adjdiff = meshSystem.Drift() - CurrentAdjustment;
-    real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);
-    CurrentAdjustment += ((adjdiff < 0 ? -1 : 1) * fminf(fabsf(adjdiff), Params.DriftSpeed*elapsed*driftScale));
+    //real adjdiff = meshSystem.Drift() - CurrentAdjustment;
+    //real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);
+    //CurrentAdjustment += ((adjdiff < 0 ? -1 : 1) * fminf(fabsf(adjdiff), Params.DriftSpeed*elapsed*driftScale));
 
-    if(Params.Shaded)
-    {
-        water.Use();
-        water.SetUniformv4("CameraPosition", camera.GetPosition());
-        water.SetTransform(camera.GetProjection()*camera.GetView());
+    //if(Params.Shaded)
+    //{
+    //    water.Use();
+    //    water.SetUniformv4("CameraPosition", camera.GetPosition());
+    //    water.SetTransform(camera.GetProjection()*camera.GetView());
 
-        water.SetUniformf("ZAdjustment", -CurrentAdjustment);
-        water.SetUniformf("RefractionFactor", 1.000293/1.333);
-        water.SetTexture("Background", backTex, 2, GL_TEXTURE_CUBE_MAP);
-        water.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
-        TGVectorF4 *norms = meshSystem.Normals();
-        real *data = meshSystem.Commit();
-        mesh.Draw(water, data, norms, false);
-        renderManager.End();
-    }
-    else
-    {
-        colors.Use();
-        colors.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
-        colors.SetTransform(camera.GetProjection()*camera.GetView());
-        colors.SetUniformf("ColorScale", Params.Color);
+    //    water.SetUniformf("ZAdjustment", -CurrentAdjustment);
+    //    water.SetUniformf("RefractionFactor", 1.000293/1.333);
+    //    water.SetTexture("Background", backTex, 2, GL_TEXTURE_CUBE_MAP);
+    //    water.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
+    //    TGVectorF4 *norms = meshSystem.Normals();
+    //    real *data = meshSystem.Commit();
+    //    mesh.Draw(water, data, norms, false);
+    //    renderManager.End();
+    //}
+    //else
+    //{
+    //    colors.Use();
+    //    colors.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
+    //    colors.SetTransform(camera.GetProjection()*camera.GetView());
+    //    colors.SetUniformf("ColorScale", Params.Color);
 
-        colors.SetUniformf("ZAdjustment", -CurrentAdjustment);
-        TGVectorF4 *norms = meshSystem.Normals();
-        real *data = meshSystem.Commit();
-        mesh.Draw(water, data, norms, false);
-    }
+    //    colors.SetUniformf("ZAdjustment", -CurrentAdjustment);
+    //    TGVectorF4 *norms = meshSystem.Normals();
+    //    real *data = meshSystem.Commit();
+    //    mesh.Draw(water, data, norms, false);
+    //}
 }
 
 void ChangeSize(int width, int height)

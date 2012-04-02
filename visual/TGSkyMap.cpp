@@ -94,9 +94,10 @@ void TGSkyMap::Create(const char *textureFile)
     SDL_FreeSurface(bitmap);
 }
 
-void TGSkyMap::Draw(TGShader &shader)
+void TGSkyMap::Draw(TGShader &shader, bool setTex)
 {
-    shader.SetTexture("Tiles", myTexture, 3);
+    if(setTex)
+        shader.SetTexture("Tiles", myTexture, 3);
     CheckError();
     shader.SetAttribute("Vertex", myBuffers[VBO], 4, GL_FLOAT, 0, 0);
     shader.SetAttribute("TexCoord", myBuffers[TexCoord], 2, GL_FLOAT, 0, 0);
