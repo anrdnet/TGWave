@@ -14,10 +14,12 @@ varying float Specular;
 varying float Transperancy;
 varying vec3 TexCoordRefract;
 varying vec3 TexCoordReflect;
+varying vec3 Offset;
 
 void main(void)
 {
     vec4 pos = vec4(Grid.x, Z+ZAdjustment, Grid.y,1);
+    Offset = pos.xyz;
 
     vec4 camNorm = normalize(CameraPosition - pos);
     vec4 lightNorm = normalize(LightPosition - pos);

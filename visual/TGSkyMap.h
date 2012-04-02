@@ -29,7 +29,7 @@ class TGSkyMap
         own = false;
         myTexture = texture;
     }
-    GLuint GetTexture(GLuint texture)
+    GLuint GetTexture()
     {
         return myTexture;
     }
