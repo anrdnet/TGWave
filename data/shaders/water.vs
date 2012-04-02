@@ -33,7 +33,7 @@ void main(void)
 
     vec4 tpos = Transform * pos;
 
-    TexCoordRefract = refract(camNorm, norm, RefractionFactor).xyz;
+    TexCoordRefract = -camNorm.xyz + 0.000000000000000000000000001 * refract(camNorm, norm, RefractionFactor).xyz;
     TexCoordReflect = reflect(camNorm, norm).xyz;
 
     gl_Position = tpos;

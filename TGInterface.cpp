@@ -282,11 +282,12 @@ void Draw()
         water.SetTransform(camera.GetProjection()*camera.GetView());
 
         water.SetUniformf("ZAdjustment", -CurrentAdjustment);
-        water.SetUniformf("RefractionFactor", 1.000293/1.333);
+        water.SetUniformf("RefractionFactor", 0);//1.000293/1.333);
         water.SetTexture("Background", backTex, 2, GL_TEXTURE_CUBE_MAP);
-        water.SetTexture("Sky", skybox.GetTexture(), 2, GL_TEXTURE_CUBE_MAP);
+        water.SetTexture("Sky", skybox.GetTexture(), 3, GL_TEXTURE_CUBE_MAP);
         water.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
-        water.SetUniformf("Ratio", tw/th);
+        water.SetUniformf("ScaleX", tw);
+        water.SetUniformf("ScaleY", th);
         TGVectorF4 *norms = meshSystem.Normals();
         real *data = meshSystem.Commit();
         mesh.Draw(water, data, norms, false);
