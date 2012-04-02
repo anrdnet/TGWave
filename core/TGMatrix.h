@@ -6,6 +6,11 @@
 #include "core/TGDef.h"
 #include "core/TGVector.h"
 #include "core/TGDebug.h"
+#include <string>
+#include <iostream>
+#include <sstream>
+
+using namespace std;
 
 class TGMatrix4
 {
@@ -75,7 +80,7 @@ class TGMatrix4
         return myData;
     }
 
-    //operator const char*() const;
+    operator string() const;
 };
 
 #endif

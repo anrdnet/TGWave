@@ -85,6 +85,35 @@ GLenum IndexToFace(uint index)
     Bug(true, "Face index out of bounds");
 }
 
+void Dir(TGMatrix4 &m, const TGVectorF4 &dir, const TGVectorF4 &p)
+{
+    TGVectorF4 Z = dir;
+    Z.Normalize();
+    TGVectorF4 up;
+    if(fabsf(fabsf(Z.Y) - 1) > 0.01)
+        up = UnitYF;
+    else
+        up = ZeroF-UnitZF;
+    TGVectorF4 X = up % Z;
+    X.Normalize();
+    TGVectorF4 Y = Z % X;
+    m(2,0) = Z.X;
+    m(2,1) = Z.Y;
+    m(2,2) = Z.Z;
+    m(0,0) = X.X;
+    m(0,1) = X.Y;
+    m(0,2) = X.Z;
+    m(1,0) = Y.X;
+    m(1,1) = Y.Y;
+    m(1,2) = Y.Z;
+
+    m(0,3) = -(p * X);
+    m(1,3) = -(p * Y);
+    m(2,3) = -(p * Z);
+    Debug("View is");
+    Debug("%s", ((string)m).c_str());
+}
+
 SimParams &Initialize()
 {
     Debug("Initialize native");
@@ -93,22 +122,22 @@ SimParams &Initialize()
     TGMatrix4 orthoh; orthoh.CreateOrthogonal(-th/2., th/2., height-depth, -(height-depth), 0.1, 20);
     TGMatrix4 orthow; orthow.CreateOrthogonal(-tw/2., tw/2., height-depth, -(height-depth), 0.1, 20);
     TGMatrix4 orthoz; orthoz.CreateOrthogonal(-tw/2., tw/2., -th/2., th/2., 0.1, 20);
+    TGMatrix4 view;
 
-    TGVectorF4 pos(tw/2, 0, th/2);
-    camera.SetPosition(pos);
+    TGVectorF4 pos(tw/2., 0, th/2.);
 
-    camera.LookAt(pos + TGVectorF4(1,0,0));
-    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_X)] = orthoh * camera.GetView();
-    camera.LookAt(pos + TGVectorF4(0,1,0));
-    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_Y)] = orthoz * camera.GetView();
-    camera.LookAt(pos + TGVectorF4(0,0,1));
-    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_Z)] = orthow * camera.GetView();
-    camera.LookAt(pos + TGVectorF4(-1,0,0));
-    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_X)] = orthoh * camera.GetView();
-    camera.LookAt(pos + TGVectorF4(0,-1,0));
-    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y)] = orthoz * camera.GetView();
-    camera.LookAt(pos + TGVectorF4(0,0,-1));
-    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z)] = orthow * camera.GetView();
+    Dir(view, TGVectorF4(1,0,0), pos);
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_X)] = orthoh * view;
+    Dir(view, TGVectorF4(0,1,0), pos);
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_Y)] = orthoz * view;
+    Dir(view, TGVectorF4(0,0,1), pos);
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_Z)] = orthow * view;
+    Dir(view, TGVectorF4(-1,0,0), pos);
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_X)] = orthoh * view;
+    Dir(view, TGVectorF4(0,-1,0), pos);
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y)] = orthoz * view;
+    Dir(view, TGVectorF4(0,0,-1), pos);
+    CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z)] = orthow * view;
 
     TGVectorF4 myMovement;
     myMovement.Z = -2;
@@ -151,6 +180,7 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     renderManager.Create();
     envmesh.Create(tw, th, 0.3, height, depth);
     skybox.Create("data/textures/Skybox");
+    cubebox.Create("data/textures/Skybox");
     black.SetShader(TGVertexShader, vs);
     water.SetShader(TGVertexShader, vs);
     water.SetShader(TGFragmentShader, fs);
@@ -237,10 +267,11 @@ void Draw()
         }
         backTex = renderManager.BeginWater();
     }
-    cubebox.SetTexture(backTex);
     cube.Use();
+    cubebox.SetTexture(backTex);
     cube.SetTransform(camera.GetProjection()*camera.GetView());
     cubebox.Draw(cube);
+    skybox.Draw(cube);
     //env.Use();
     //env.SetTransform(camera.GetProjection()*camera.GetView());
     //envmesh.Draw(env);

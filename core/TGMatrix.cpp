@@ -278,18 +278,18 @@ bool TGMatrix4::InvertTranspose()
     t(3,3) = (m(0,1)*m(1,2)*m(2,0) - m(0,2)*m(1,1)*m(2,0) + m(0,2)*m(1,0)*m(2,1) - m(0,0)*m(1,2)*m(2,1) - m(0,1)*m(1,0)*m(2,2) + m(0,0)*m(1,1)*m(2,2))*factor;
     return true;
 }
-//TGMatrix4::operator const char *() const
-//{
-//    ostringstream out;
-//    out<<"[ ";
-//    for(int i = 0; i < 4; i++)
-//    {
-//        for(int j = 0; j < 4; j++)
-//        {
-//            out<<(*this)(i,j)<<" ";
-//        }
-//        out<<"; ";
-//    }
-//    out<<" ]";
-//    return out.str();
-//}
+TGMatrix4::operator string () const
+{
+    ostringstream out;
+    out<<"[ ";
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            out<<(*this)(i,j)<<" ";
+        }
+        out<<"; ";
+    }
+    out<<" ]";
+    return out.str();
+}
