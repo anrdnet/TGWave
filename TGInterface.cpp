@@ -88,8 +88,8 @@ SimParams &Initialize()
     Debug("Initialize native");
     Debug("h: %d, w: %d, th:%g, tw:%g", h, w, th, tw);
 
-    TGMatrix4 orthoh; orthoh.CreateOrthogonal(-th/2., th/2., -(height-depth), height-depth, 0.1, 20);
-    TGMatrix4 orthow; orthow.CreateOrthogonal(-tw/2., tw/2., -(height-depth), height-depth, 0.1, 20);
+    TGMatrix4 orthoh; orthoh.CreateOrthogonal(-th/2., th/2., height-depth, -(height-depth), 0.1, 20);
+    TGMatrix4 orthow; orthow.CreateOrthogonal(-tw/2., tw/2., height-depth, -(height-depth), 0.1, 20);
     TGMatrix4 orthoz; orthoz.CreateOrthogonal(-tw/2., tw/2., -th/2., th/2., 0.1, 20);
 
     TGVectorF4 pos(tw/2, 0, th/2);

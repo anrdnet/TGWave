@@ -15,5 +15,5 @@ void main(void)
     vec4 red = vec4(1.0,0.0,0.0, 1.0);
     gl_FragColor = mix(mix(textureCube(Background, TexCoordReflect), textureCube(Background, TexCoordRefract),Transperancy)
 		*(Diffuse * 0.25 + 0.75), light, Specular);
-    gl_FragColor = textureCube(Background, TexCoordRefract) + 0.0*gl_FragColor;
+    gl_FragColor = textureCube(Background, TexCoordRefract) + 0.000000000001*gl_FragColor;
 }
