@@ -1,8 +1,8 @@
-uniform samplerCube Tiles;
+uniform samplerCube Tex;
 
 varying vec4 vTexCoord;
 
 void main(void)
 {
-    gl_FragColor = textureCube(Tiles, vTexCoord.xyz);
+    gl_FragColor = textureCube(Tex, vTexCoord.xyz);
 }

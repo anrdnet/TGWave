@@ -149,7 +149,7 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     cube.Create();
     renderManager.Create();
     envmesh.Create(tw, th, 0.3, height, depth);
-    skybox.Create("data/textures/Skybox.bmp");
+    skybox.Create("data/textures/Skybox");
     black.SetShader(TGVertexShader, vs);
     water.SetShader(TGVertexShader, vs);
     water.SetShader(TGFragmentShader, fs);
@@ -226,22 +226,20 @@ void Draw()
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     GLuint backTex;
     env.Use();
-    if(Params.Shaded)
-    {
-        for(uint i = 0; i < 6; i++)
-        {
-            env.SetTransform(CubeViews[i]);
-            renderManager.BeginEnv(IndexToFace(i));
-            skybox.Draw(env);
-            envmesh.Draw(env);
-        }
-        backTex = renderManager.BeginWater();
-    }
+    //if(Params.Shaded)
+    //{
+    //    for(uint i = 0; i < 6; i++)
+    //    {
+    //        env.SetTransform(CubeViews[i]);
+    //        renderManager.BeginEnv(IndexToFace(i));
+    //        envmesh.Draw(env);
+    //    }
+    //    backTex = renderManager.BeginWater();
+    //}
     cube.Use();
     cube.SetTransform(camera.GetProjection()*camera.GetView());
     //envmesh.Draw(env);
-    cube.SetTexture("Tiles", backTex, 3, GL_TEXTURE_CUBE_MAP);
-    skybox.Draw(cube, false);
+    skybox.Draw(cube);
 
     //real adjdiff = meshSystem.Drift() - CurrentAdjustment;
     //real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);

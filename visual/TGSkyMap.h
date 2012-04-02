@@ -9,11 +9,10 @@ class TGSkyMap
     enum
     {
         VBO,
-        TexCoord,
         Element
     };
     GLuint myTexture;
-    GLuint myBuffers[3];
+    GLuint myBuffers[2];
 
     real mySize;
     TGVectorF4 myCenter;
