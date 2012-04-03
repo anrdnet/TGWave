@@ -22,6 +22,7 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myParams(params)
 {
     set_border_width(10);
+    set_name("tgwave");
     set_title("tgwave-ctrl");
     
     myCScale.set_value(params.c);

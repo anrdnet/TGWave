@@ -32,10 +32,7 @@ void TGCamera::Create()
         //Debug("Using 2D view");
         X = UnitXF;
         Y = ZeroF-UnitZF;
-        if(dir.Z > 0)
-            Z = UnitYF;
-        else
-            Z = ZeroF - UnitYF;
+        Z = UnitYF;
         myView(0,3) = -myLookAt.X;
         myView(1,3) = myLookAt.Z;
         myView(2,3) = -(myPosition * UnitYF);

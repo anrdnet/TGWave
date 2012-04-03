@@ -19,7 +19,7 @@ struct SimParams
         Scale = 1;
         Color = 20;
         Reset = false;
-        Shaded = true;
+        Shaded = false;
         Zoom = false;
     }
     real DriftSpeed;

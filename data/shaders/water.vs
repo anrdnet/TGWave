@@ -15,7 +15,9 @@ varying float Diffuse;
 varying float Specular;
 varying float Transperancy;
 varying vec3 TexCoordRefract;
+varying vec3 TexCoordRefractSky;
 varying vec3 TexCoordReflect;
+varying vec3 TexCoordReflectSky;
 
 vec3 Coord(vec3 p, vec3 dir, vec3 max)
 {
@@ -58,7 +60,9 @@ void main(void)
 
     camNorm /= vec4(ScaleX, 1.0, ScaleY,1.0);
     TexCoordRefract = Coord(Offset, refract(camNorm, norm, RefractionFactor).xyz*vec3(1.0,0.5,1.0), vec3(1.0,1.0,1.0));
+    TexCoordRefractSky = Coord(Offset, refract(camNorm, norm, RefractionFactor).xyz*vec3(1.0,0.5,1.0), vec3(9.0,9.0,9.0));
     TexCoordReflect = Coord(Offset, reflect(camNorm, norm).xyz, vec3(1.0,1.0,1.0));
+    TexCoordReflectSky = Coord(Offset, reflect(camNorm, norm).xyz, vec3(9.0,9.0,9.0));
 
     gl_Position = tpos;
 } 

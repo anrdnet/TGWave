@@ -1,11 +1,12 @@
 (x) Camera fix
 (x) Space fix
-( ) Shading
+( ) Bigger scales
+(x) Shading
 (x)  > Texture
 (x)  > Frame buffer
 (x)  > Transperancy
 (x)  > Refraction
 (x)  > LightSource
-( )  > Reflection
+(x)  > Reflection
 (x)  > Skymap
-( )  > Cubemap
+(x)  > Cubemap

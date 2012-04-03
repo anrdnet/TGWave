@@ -34,6 +34,8 @@ class TGCamera
 
     TGVectorF4 GetPosition() 
     {
+        if(my2D)
+            return myLookAt + TGVectorF4(0,5,0);
         return myPosition;
     }
 
