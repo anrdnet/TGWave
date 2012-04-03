@@ -11,6 +11,9 @@ class TGRenderManager
         Frame = 0,
         Env = 1
     };
+    uint myWidth;
+    uint myHeight;
+    GLint myViewport[4];
     GLuint myTexture;
     GLuint myFrameBuffer;
 
@@ -22,8 +25,7 @@ class TGRenderManager
     void ChangeSize(uint width, uint height);
 
     void BeginEnv(GLenum face);
-    GLuint BeginWater();
-    void End();
+    GLuint EndEnv();
 };
 
 #endif

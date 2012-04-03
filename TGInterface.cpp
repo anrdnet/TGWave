@@ -18,6 +18,8 @@ uint h = 75*2;
 uint w = 128*2;
 real th = 2.0;
 real tw = 3.4;
+//real th = 1.0;
+//real tw = 1.0;
 real dx = tw/float(w-1);
 real dy = th/float(h-1);
 real height = 0.3;
@@ -30,7 +32,7 @@ TGClick Clicker(meshSystem, dx, dy, Params);
 TGMesh mesh(h,w, dx, dy);
 TGEnv envmesh;
 TGSkyMap skybox(tw+0.6, TGVectorF4(tw/2,0,th/2));
-TGSkyMap cubebox(1, TGVectorF4());
+//TGSkyMap cubebox(1, TGVectorF4());
 TGCamera camera;
 //TGMatrix4 meshTransform;
 TGShader water;
@@ -43,6 +45,7 @@ real LastTime = 0;
 real LastFPS = 0;
 uint wWidth;
 uint wHeight;
+GLuint backTex;
 pthread_mutex_t SimParams::Lock;
 TGMatrix4 CubeViews[6];
 
@@ -119,9 +122,9 @@ SimParams &Initialize()
     Debug("Initialize native");
     Debug("h: %d, w: %d, th:%g, tw:%g", h, w, th, tw);
 
-    TGMatrix4 orthoh; orthoh.CreateOrthogonal(-th/2., th/2., height-depth, -(height-depth), 0.1, 20);
-    TGMatrix4 orthow; orthow.CreateOrthogonal(-tw/2., tw/2., height-depth, -(height-depth), 0.1, 20);
-    TGMatrix4 orthoz; orthoz.CreateOrthogonal(-tw/2., tw/2., -th/2., th/2., 0.1, 20);
+    TGMatrix4 orthoh; orthoh.CreateOrthogonal(-th/2, th/2, height-depth, -(height-depth), 0.1, 20);
+    TGMatrix4 orthow; orthow.CreateOrthogonal(-tw/2, tw/2, height-depth, -(height-depth), 0.1, 20);
+    TGMatrix4 orthoz; orthoz.CreateOrthogonal(-tw/2, tw/2, -th/2, th/2, 0.1, 20);
     TGMatrix4 view;
 
     TGVectorF4 pos(tw/2., 0, th/2.);
@@ -180,7 +183,7 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     renderManager.Create();
     envmesh.Create(tw, th, 0.3, height, depth);
     skybox.Create("data/textures/Skybox");
-    cubebox.Create("data/textures/Skybox");
+    //cubebox.Create("data/textures/Skybox");
     black.SetShader(TGVertexShader, vs);
     water.SetShader(TGVertexShader, vs);
     water.SetShader(TGFragmentShader, fs);
@@ -205,6 +208,14 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    env.Use();
+    for(uint i = 0; i < 6; i++)
+    {
+        env.SetTransform(CubeViews[i]);
+        renderManager.BeginEnv(IndexToFace(i));
+        envmesh.Draw(env);
+    }
+    backTex = renderManager.EndEnv();
 }
 
 inline real GetTime()
@@ -255,21 +266,13 @@ void Draw()
     solver.Advance(meshSystem, elapsed/2);
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    GLuint backTex;
-    env.Use();
-    if(Params.Shaded)
-    {
-        for(uint i = 0; i < 6; i++)
-        {
-            env.SetTransform(CubeViews[i]);
-            renderManager.BeginEnv(IndexToFace(i));
-            envmesh.Draw(env);
-        }
-        backTex = renderManager.BeginWater();
-    }
     env.Use();
     env.SetTransform(camera.GetProjection()*camera.GetView());
     envmesh.Draw(env);
+    //cube.Use();
+    //cube.SetTransform(camera.GetProjection()*camera.GetView());
+    //cubebox.SetTexture(backTex);
+    //cubebox.Draw(cube);
 
     real adjdiff = meshSystem.Drift() - CurrentAdjustment;
     real driftScale = fminf((2*adjdiff+1)*(2*adjdiff+1)*(2*adjdiff+1)*5,1);
@@ -282,7 +285,7 @@ void Draw()
         water.SetTransform(camera.GetProjection()*camera.GetView());
 
         water.SetUniformf("ZAdjustment", -CurrentAdjustment);
-        water.SetUniformf("RefractionFactor", 0);//1.000293/1.333);
+        water.SetUniformf("RefractionFactor", 1.000293/1.333);
         water.SetTexture("Background", backTex, 2, GL_TEXTURE_CUBE_MAP);
         water.SetTexture("Sky", skybox.GetTexture(), 3, GL_TEXTURE_CUBE_MAP);
         water.SetUniformv4("LightPosition", TGVectorF4(tw/2, 4, 4));
@@ -291,7 +294,6 @@ void Draw()
         TGVectorF4 *norms = meshSystem.Normals();
         real *data = meshSystem.Commit();
         mesh.Draw(water, data, norms, false);
-        renderManager.End();
     }
     else
     {
