@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     SimParams &params = Initialize();
 
     StartInfo *info = new StartInfo(argc, argv, params);
-    SDL_Thread *guiThread = SDL_CreateThread(&StartGUI, info);
+    //SDL_Thread *guiThread = SDL_CreateThread(&StartGUI, info);
 
     TGRender render(0,0);
     TGResourceManager rec;
@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
     bool mouse1Down = false;
     int clickMovement = 0;
 
+
     while(running)
     {
         SDL_Event event;
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
                     clickMovement += abs(event.motion.xrel) + abs(event.motion.yrel);
                     //Debug("Got mouse move with dx=%d, dy=%d", event.motion.xrel, event.motion.yrel);
                     if(mouse1Down)
-                        Orbit(event.motion.xrel, event.motion.yrel);
+                        Orbit(event.motion.yrel, event.motion.xrel);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     Debug("Got mouse down on button %d", event.button.button);
@@ -88,7 +89,7 @@ int main(int argc, char *argv[])
                     {
                         if(clickMovement < 5)
                         {
-                            Touch(event.button.x, event.button.y);
+                            Touch(event.button.y, event.button.x);
                         }
                         mouse1Down = false;
                     }
