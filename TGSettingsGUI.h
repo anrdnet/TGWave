@@ -25,7 +25,8 @@ protected:
 
     //Member widgets:
     Gtk::Button myResetButton;
-    Gtk::VBox myMainPanel;
+    Gtk::VBox myMainPanel1;
+    Gtk::VBox myMainPanel2;
     Gtk::HScale myCScale;
     Gtk::Label myCLabel;
     Gtk::HScale myHeightScale;
@@ -40,6 +41,7 @@ protected:
     Gtk::Label myColorLabel;
     Gtk::CheckButton myShading;
     Gtk::HBox myTogglePanel;
+    Gtk::HBox mySuperPanel;
     Gtk::ToggleButton myZoom;
     SimParams &myParams;
 public:

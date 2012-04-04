@@ -54,22 +54,24 @@ TGSettingsGUI::TGSettingsGUI(SimParams &params)
     myTogglePanel.pack_end(myShading);
     myTogglePanel.pack_end(myZoom);
 
-    myMainPanel.pack_end(myResetButton);
-    myMainPanel.pack_end(myCScale);
-    myMainPanel.pack_end(myCLabel);
-    myMainPanel.pack_end(myHeightScale);
-    myMainPanel.pack_end(myHeightLabel);
-    myMainPanel.pack_end(myShapeScale);
-    myMainPanel.pack_end(myShapeLabel);
-    myMainPanel.pack_end(myViscScale);
-    myMainPanel.pack_end(myViscLabel);
-    myMainPanel.pack_end(myScaleScale);
-    myMainPanel.pack_end(myScaleLabel);
-    myMainPanel.pack_end(myColorScale);
-    myMainPanel.pack_end(myColorLabel);
-    myMainPanel.pack_end(myTogglePanel);
+    myMainPanel2.pack_end(myTogglePanel);
+    myMainPanel1.pack_end(myResetButton);
+    myMainPanel1.pack_end(myCScale);
+    myMainPanel1.pack_end(myCLabel);
+    myMainPanel2.pack_end(myHeightScale);
+    myMainPanel2.pack_end(myHeightLabel);
+    myMainPanel2.pack_end(myShapeScale);
+    myMainPanel2.pack_end(myShapeLabel);
+    myMainPanel1.pack_end(myViscScale);
+    myMainPanel1.pack_end(myViscLabel);
+    myMainPanel2.pack_end(myScaleScale);
+    myMainPanel2.pack_end(myScaleLabel);
+    myMainPanel1.pack_end(myColorScale);
+    myMainPanel1.pack_end(myColorLabel);
     
-    add(myMainPanel);
+    mySuperPanel.pack_start(myMainPanel1);
+    mySuperPanel.pack_start(myMainPanel2);
+    add(mySuperPanel);
     
     show_all();
 }
