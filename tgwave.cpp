@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     
     bool mouse1Down = false;
     int clickMovement = 0;
-
+    uint w, h;
 
     while(running)
     {
@@ -66,6 +66,8 @@ int main(int argc, char *argv[])
                     running = false;
                     break;
                 case SDL_VIDEORESIZE:
+                    w = event.resize.w;
+                    h = event.resize.h;
                     render.Resize(event.resize.w, event.resize.h);
                     ChangeSize(event.resize.w, event.resize.h);
                     break;
@@ -89,7 +91,7 @@ int main(int argc, char *argv[])
                     {
                         if(clickMovement < 5)
                         {
-                            Touch(event.button.y, event.button.x);
+                            Touch(w-event.button.y*w/h, event.button.x*h/w);
                         }
                         mouse1Down = false;
                     }
