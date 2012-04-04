@@ -143,9 +143,9 @@ SimParams &Initialize()
     CubeViews[FaceToIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z)] = orthow * view;
 
     TGVectorF4 myMovement;
-    myMovement.Z = -3;
-    myMovement.Y = 4;
-    myMovement.X = -3;
+    myMovement.Z = -1;
+    myMovement.Y = 2;
+    myMovement.X = -2;
     camera.LookAt(TGVectorF4(tw/2,0,th/2));
     camera.SetPosition(myMovement);
 
