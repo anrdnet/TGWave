@@ -62,7 +62,6 @@ TGVectorF4 &TGCamera::Orbit(real az, real el)
 {
     //Debug("Rotate az: %g; el: %g", az, el);
     TGVectorF4 dir = myPosition - myLookAt;
-    real dirLen = dir.Length();
     TGVectorF4 lX = TGVectorF4(myView(0,0), myView(0,1), myView(0,2));
     lX.Normalize();
 
@@ -72,7 +71,7 @@ TGVectorF4 &TGCamera::Orbit(real az, real el)
     dir.X = dir.X*cosa - dir.Z * sina;
     dir.Z = dir.X*sina + dir.Z * cosa;
     dir.Normalize();
-    dir *= dirLen;
+    dir *= 5.3;
     myPosition = myLookAt + dir;
 
     Create();
