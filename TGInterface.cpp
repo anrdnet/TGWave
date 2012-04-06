@@ -233,17 +233,18 @@ void Draw()
     if(LastTime != 0)
         elapsed = time - LastTime;
     LastTime = time;
-    if(elapsed > 1./30)
+    if(elapsed > 1./50)
     {
         Debug("Late frame");
-        elapsed = 1./60;
+        elapsed = 1./50;
     }
     if(time - LastFPS > 5)
     {
         Debug("FPS: %g", frameCount/(time-LastFPS));
         LastFPS = time;
         frameCount = 0;
-        Clicker.Click(10000000, 10000000);
+        Debug("Time adjust");
+        Clicker.Click(10, 10);
     }
     frameCount++;
     
