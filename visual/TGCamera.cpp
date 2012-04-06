@@ -71,7 +71,7 @@ TGVectorF4 &TGCamera::Orbit(real az, real el)
     dir.X = dir.X*cosa - dir.Z * sina;
     dir.Z = dir.X*sina + dir.Z * cosa;
     dir.Normalize();
-    dir *= 5.3;
+    dir *= 6.5;
     myPosition = myLookAt + dir;
 
     Create();

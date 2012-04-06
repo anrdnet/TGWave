@@ -243,6 +243,7 @@ void Draw()
         Debug("FPS: %g", frameCount/(time-LastFPS));
         LastFPS = time;
         frameCount = 0;
+        Clicker.Click(10000000, 10000000);
     }
     frameCount++;
     

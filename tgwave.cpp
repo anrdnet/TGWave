@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
                     clickMovement += abs(event.motion.xrel) + abs(event.motion.yrel);
                     //Debug("Got mouse move with dx=%d, dy=%d", event.motion.xrel, event.motion.yrel);
                     if(mouse1Down)
-                        Orbit(event.motion.yrel, event.motion.xrel);
+                        Orbit(-event.motion.yrel, event.motion.xrel);
                     break;
                 case SDL_MOUSEBUTTONDOWN:
                     Debug("Got mouse down on button %d", event.button.button);
