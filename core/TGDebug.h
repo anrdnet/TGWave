@@ -12,7 +12,7 @@
 #define _str2(x) #x
 #define _str(x) _str2(x)
 #define _line _str(__LINE__)
-#define Debug(...) printf(__FILE__ ":"_line " "  __VA_ARGS__); printf("\n")
+#define Debug(...) printf(__FILE__ ":" _line " "  __VA_ARGS__); printf("\n")
 
 #define CheckError() _CheckError(__FILE__,__LINE__)
 
