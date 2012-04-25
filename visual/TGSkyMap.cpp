@@ -106,8 +106,10 @@ void TGSkyMap::Create(const char *textureFile)
         }
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, myTexture);
-        gluBuild2DMipmaps(Faces[i], GL_RGB, bitmap->w, bitmap->h, textureFormat, GL_UNSIGNED_BYTE, bitmap->pixels);
-
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_GENERATE_MIPMAP, GL_TRUE);
+        //gluBuild2DMipmaps(Faces[i], GL_RGB, bitmap->w, bitmap->h, textureFormat, GL_UNSIGNED_BYTE, bitmap->pixels);
+        glTexImage2D(Faces[i], 0, GL_RGB, bitmap->w, bitmap->h, 0, textureFormat, GL_UNSIGNED_BYTE, bitmap->pixels);
+        CheckError();
         SDL_FreeSurface(bitmap);
     }
 }
