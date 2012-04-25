@@ -190,7 +190,9 @@ void TGEnv::Create(real tw, real th, real border, real height, real depth)
     CheckError();
     glBindTexture(GL_TEXTURE_2D, myTexture);
     CheckError();
-    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, TilesTexture.width, TilesTexture.height, GL_RGB, GL_UNSIGNED_BYTE, TilesTexture.pixel_data);
+    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+    //gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, TilesTexture.width, TilesTexture.height, GL_RGB, GL_UNSIGNED_BYTE, TilesTexture.pixel_data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, TilesTexture.width, TilesTexture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, TilesTexture.pixel_data);
     CheckError();
 }
 
