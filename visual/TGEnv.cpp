@@ -206,4 +206,5 @@ void TGEnv::Draw(TGShader &shader)
     CheckError();
 
     glDrawElements(GL_TRIANGLES, 102, GL_UNSIGNED_SHORT, 0);
+    CheckError();
 }

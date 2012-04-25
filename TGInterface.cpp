@@ -207,7 +207,7 @@ void Create(const char *vs, const char *fs, const char *bl, const char *envvs, c
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    //glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     env.Use();
     for(uint i = 0; i < 6; i++)
     {
